@@ -1,0 +1,15 @@
+name: user_repository
+description: Dart package which manages the user domain.
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  equatable: ^1.2.0
+  meta: ^1.1.8
+  flutter_wordpress:
+    path: ../flutter_wordpress-0.2.1-mod
+  preferences:
+      path: ../preferences
