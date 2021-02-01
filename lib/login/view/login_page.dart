@@ -10,11 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:safe_pass/login/login.dart';
 
-class LoginPage extends StatelessWidget {
-  static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => LoginPage());
-  }
+import 'login_form.dart';
 
+class LoginPage extends StatelessWidget {
+  final void Function() onRegisterButtonTapped;
+
+  const LoginPage({Key key, this.onRegisterButtonTapped}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +26,9 @@ class LoginPage extends StatelessWidget {
                 RepositoryProvider.of<AuthenticationRepository>(context),
           );
         },
-        child: LoginForm(),
+        child: LoginForm(
+          onRegisterButtonTapped: onRegisterButtonTapped,
+        ),
       ),
     );
   }

@@ -6,4 +6,5 @@
  *
  */
 export 'bloc/theme_bloc.dart';
-export "themes/aqua_gray.dart";
+export 'colors/my_colors.dart';
+export "themes/dark_blue_theme.dart";

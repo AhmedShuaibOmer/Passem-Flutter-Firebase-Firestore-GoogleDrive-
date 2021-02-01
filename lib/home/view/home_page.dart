@@ -25,10 +25,10 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             Builder(
               builder: (context) {
-                final userId = context.select(
+                /*final userId = context.select(
                   (AuthenticationBloc bloc) => bloc.state.user.id,
-                );
-                return Text('UserID: $userId');
+                );*/
+                return Text('UserID: ' /*$userId*/);
               },
             ),
             RaisedButton(

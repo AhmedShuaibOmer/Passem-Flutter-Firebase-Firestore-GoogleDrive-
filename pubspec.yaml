@@ -27,6 +27,11 @@ dependencies:
   formz: ^0.3.1
   equatable: ^1.2.5
   google_fonts: ^1.1.2
+  flutter_form_bloc: ^0.19.0
+  intl: 0.17.0-nullsafety.2
+  flutter_localizations:
+    sdk: flutter
+
   authentication_repository:
     path: plugins/authentication_repository
   user_repository:
@@ -86,3 +91,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_intl:
+  main_locale: en_US
+  enabled: true
+

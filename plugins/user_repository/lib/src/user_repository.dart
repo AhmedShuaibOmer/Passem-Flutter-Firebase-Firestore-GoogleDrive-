@@ -9,7 +9,6 @@
 
 import 'dart:async';
 
-//import 'package:uuid/uuid.dart';//Uuid().v4()
 import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
 import 'package:flutter_wordpress/schemas/user.dart';
 import 'package:preferences/preferences.dart';

@@ -72,7 +72,7 @@ class WordPressService extends WordPress {
   // adminName and adminKey is needed only for admin level APIs
   WordPressService._internal()
       : super(
-          baseUrl: '',
+          baseUrl: 'https://safepassproject.000webhostapp.com',
           authenticator: WordPressAuthenticator.JWT,
           //adminName: '',
           //adminKey: '',

@@ -6,235 +6,152 @@
  *
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:formz/formz.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:safe_pass/authentication/authentication.dart';
 import 'package:safe_pass/login/login.dart';
-import 'package:safe_pass/login/view/widget/bezier_container.dart';
+import 'package:safe_pass/theme/theme.dart';
 
 class LoginForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-        if (state.status.isSubmissionFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
-            );
-        }
-      },
-      child: Scaffold(
-          body: Container(
-        height: height,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-                top: -height * .15,
-                right: -MediaQuery.of(context).size.width * .4,
-                child: BezierContainer()),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: height * .2),
-                    _Title(),
-                    SizedBox(height: 50),
-                    _UsernameInput(),
-                    _PasswordInput(),
-                    SizedBox(height: 20),
-                    _LoginButton(),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.centerRight,
-                      child: Text('Forgot Password ?',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w500)),
-                    ),
-                    //_divider(),
-                    //_facebookButton(),
-                    SizedBox(height: height * .055),
-                    _CreateAccountLabel(),
-                  ],
-                ),
-              ),
-            ),
-            //Positioned(top: 40, left: 0, child: _backButton()),
-          ],
-        ),
-      )),
-    );
-  }
-}
+  final void Function() onRegisterButtonTapped;
 
-class _UsernameInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) {
-        return previous.username != current.username;
-      },
-      builder: (context, state) {
-        return Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Username',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                key: const Key('loginForm_usernameInput_textField'),
-                onChanged: (username) => context
-                    .read<LoginBloc>()
-                    .add(LoginUsernameChanged(username)),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      )),
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true,
-                  errorText: state.username.invalid ? 'invalid username' : null,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
+  const LoginForm({Key key, this.onRegisterButtonTapped}) : super(key: key);
 
-class _PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.password != current.password,
-      builder: (context, state) {
-        return Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Password',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                key: const Key('loginForm_passwordInput_textField'),
-                onChanged: (password) => context
-                    .read<LoginBloc>()
-                    .add(LoginPasswordChanged(password)),
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      )),
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true,
-                  errorText: state.password.invalid ? 'invalid password' : null,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+    bool isSubmitting = false;
+    return Builder(
+      builder: (context) {
+        final loginBloc = context.watch<LoginBloc>();
 
-class _LoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
-      builder: (context, state) {
-        return state.status.isSubmissionInProgress
-            ? const CircularProgressIndicator()
-            : InkWell(
-                key: const Key('loginForm_continue_raisedButton'),
-                onTap: state.status.isValidated
-                    ? () {
-                        context.read<LoginBloc>().add(const LoginSubmitted());
-                      }
-                    : null,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: Colors.grey.shade200,
-                            offset: Offset(2, 4),
-                            blurRadius: 5,
-                            spreadRadius: 2)
-                      ],
-                      gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-                  child: Text(
-                    'Login',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+        return Scaffold(
+          body: FormBlocListener<LoginBloc, String, String>(
+            onSubmitting: (context, state) {
+              isSubmitting = true;
+            },
+            onSuccess: (context, state) {
+              isSubmitting = false;
+            },
+            onFailure: (context, state) {
+              isSubmitting = false;
+
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(content: Text('Authentication Failure')),
+                );
+            },
+            child: Container(
+              child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    top: height * .15,
+                    child:
+                        Container(width: width, child: Center(child: _Title())),
                   ),
-                ),
-              );
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: CustomPaint(
+                      size: size,
+                      painter: LoginBackgroundPainter(),
+                    ),
+                  ),
+                  Container(
+                    height: height,
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: height * .35,
+                          ),
+                          FormTextField(
+                            prefixIcon: Icons.mail_outline_rounded,
+                            textFieldBloc: loginBloc.email,
+                            keyboardType: TextInputType.emailAddress,
+                            hintText: 'Type your Email address',
+                            hasError: loginBloc.email.state.canShowError,
+                          ),
+                          FormTextField(
+                            prefixIcon: Icons.lock_outline_rounded,
+                            textFieldBloc: loginBloc.password,
+                            hintText: 'Type your Password',
+                            suffixButton: SuffixButton.obscureText,
+                            suffixIconConstraints: BoxConstraints(
+                              maxHeight: 24,
+                              maxWidth: 24,
+                            ),
+                            hasError: loginBloc.password.state.canShowError,
+                          ),
+                          SizedBox(
+                            height: 38,
+                          ),
+                          SubmitButton(
+                            key: const Key('loginForm_continue_submitButton'),
+                            onPressed: loginBloc.submit,
+                            label: 'Login',
+                            isSubmitting: isSubmitting,
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 32),
+                            child: TextButton(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                              ),
+                              child: Text(
+                                'Forget your password?',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: height * .9,
+                    left: 0,
+                    child: _createAccountLabel(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
-}
 
-class _CreateAccountLabel extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20),
-        padding: EdgeInsets.all(15),
-        alignment: Alignment.bottomCenter,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Don\'t have an account ?',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
+  Widget _createAccountLabel() {
+    return Container(
+      padding: EdgeInsets.all(15),
+      alignment: Alignment.bottomCenter,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Don\'t have an account ?',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          TextButton(
+            onPressed: onRegisterButtonTapped,
+            child: Text(
               'Register',
-              style: TextStyle(
-                  color: Color(0xfff79c4f),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -246,23 +163,14 @@ class _Title extends StatelessWidget {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-          text: 'd',
-          style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.headline4,
-            fontSize: 30,
-            fontWeight: FontWeight.w700,
-            color: Color(0xffe46b10),
-          ),
-          children: [
-            TextSpan(
-              text: 'ev',
-              style: TextStyle(color: Colors.black, fontSize: 30),
-            ),
-            TextSpan(
-              text: 'rnz',
-              style: TextStyle(color: Color(0xffe46b10), fontSize: 30),
-            ),
-          ]),
+        text: 'SAFEPASS',
+        style: GoogleFonts.portLligatSans(
+          textStyle: Theme.of(context).textTheme.headline4,
+          fontSize: 30,
+          fontWeight: FontWeight.w700,
+          color: MyColors.primaryColor,
+        ),
+      ),
     );
   }
 }

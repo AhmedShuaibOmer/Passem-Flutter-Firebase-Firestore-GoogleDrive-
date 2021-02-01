@@ -62,10 +62,11 @@ class AuthenticationBloc
       case AuthenticationStatus.unauthenticated:
         return const AuthenticationState.unauthenticated();
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser();
-        return user != null
-            ? AuthenticationState.authenticated(user)
-            : const AuthenticationState.unauthenticated();
+        /*final user = await _tryGetUser();*/
+        return /*user != null
+            ? */
+            AuthenticationState.authenticated(/*user*/)
+            /*: const AuthenticationState.unauthenticated()*/;
       default:
         return const AuthenticationState.unknown();
     }

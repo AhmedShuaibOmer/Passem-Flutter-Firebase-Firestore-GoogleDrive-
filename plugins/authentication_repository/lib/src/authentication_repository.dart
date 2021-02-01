@@ -56,18 +56,22 @@ class AuthenticationRepository {
 
     response.then((user) {
       _sharedPrefService.setAuthToken(_wordPress.getToken());
-      _controller.add(AuthenticationStatus.authenticated);
-      print('User authentecated: $user');
+      if (!_controller.isClosed) {
+        _controller.add(AuthenticationStatus.authenticated);
+        print('User authenticated: $user');
+      }
       return _wordPress.getToken();
     }).catchError((err) {
       print('Failed to fetch user: $err');
+      throw err;
     });
     return null;
   }
 
   void logOut(/*{@required final String token}*/) {
     _sharedPrefService.setAuthToken(_wordPress.getToken());
-    _controller.add(AuthenticationStatus.unauthenticated);
+    if (!_controller.isClosed)
+      _controller.add(AuthenticationStatus.unauthenticated);
   }
 
   void dispose() => _controller.close();

@@ -8,11 +8,12 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:user_repository/user_repository.dart';
 
 import 'authentication/authentication.dart';
+import 'generated/l10n.dart';
 import 'home/home.dart';
-import 'login/login.dart';
 import 'splash/splash.dart';
 import 'theme/theme.dart';
 
@@ -32,8 +33,15 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, themeState) {
-        return RepositoryProvider.value(
-          value: authenticationRepository,
+        return MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<AuthenticationRepository>(
+              create: (context) => authenticationRepository,
+            ),
+            RepositoryProvider<UserRepository>(
+              create: (context) => userRepository,
+            ),
+          ],
           child: BlocProvider(
             create: (_) => AuthenticationBloc(
               authenticationRepository: authenticationRepository,
@@ -48,7 +56,6 @@ class App extends StatelessWidget {
 }
 
 class AppView extends StatefulWidget {
-
   @override
   _AppViewState createState() => _AppViewState();
 }
@@ -61,10 +68,20 @@ class _AppViewState extends State<AppView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: _navigatorKey,
       themeMode: BlocProvider.of<ThemeBloc>(context).state.themeMode,
-      theme: AquaGray.lightTheme,
-      darkTheme: AquaGray.darkTheme,
+      theme: DarkBlueTheme.lightTheme,
+      darkTheme: DarkBlueTheme.darkTheme,
+      localizationsDelegates: [
+        // 1
+        S.delegate,
+        // 2
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
@@ -77,7 +94,7 @@ class _AppViewState extends State<AppView> {
                 break;
               case AuthenticationStatus.unauthenticated:
                 _navigator.pushAndRemoveUntil<void>(
-                  LoginPage.route(),
+                  AuthenticationPage.route(),
                   (route) => false,
                 );
                 break;
