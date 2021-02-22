@@ -7,7 +7,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:safe_pass/theme/colors/my_colors.dart';
+
+import '../../theme/colors/my_colors.dart';
 
 class DarkBlueTheme {
   // This class is not meant to be instantiated or extended; this constructor

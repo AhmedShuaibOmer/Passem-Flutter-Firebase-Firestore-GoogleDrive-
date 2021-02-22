@@ -1,3 +1,11 @@
 {
-  "@@locale": "en_US"
+  "@@locale": "en_US",
+  "google_sign_in_button" : "Sign in with google",
+  "no_internet_failure_title" : "No Internet Connection",
+  "login_no_internet_failure" : " You need to be connected to the internet to login.",
+  "no_internet_message" : " Please Check your internet settings.",
+  "operation_failed" : "Operation Failed",
+  "login_with_google_failure" : " A problem occurred while linking your Google account. \n Please Try again.",
+  "new_user_setup_failure" : " A problem occurred while setting up your account. \n Please Try again.",
+  "new_user_no_internet_failure" : "You need to be connected to the internet to setup your new account."
 }

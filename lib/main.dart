@@ -5,27 +5,38 @@
  * 
  * Copyright (c) 2021 SafePass
  */
-import 'package:authentication_repository/authentication_repository.dart';
+import 'package:domain/domain.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:safe_pass/app.dart';
-import 'package:safe_pass/theme/bloc/theme_bloc.dart';
-import 'package:user_repository/user_repository.dart';
+import 'package:passem/theme/bloc/theme_bloc.dart';
+
+import 'app.dart';
+import 'di/di.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  AuthenticationRepository authenticationRepository =
-      await AuthenticationRepository.getInstance();
-
-  UserRepository userRepository = await UserRepository.getInstance();
+  // Initializing firebase app to it services.
+  await Firebase.initializeApp();
+  // Initializing dependency injector with all of our required dependencies.
+  await initDI();
 
   runApp(
-    BlocProvider(
-      create: (_) => ThemeBloc()..add(ThemeLoadStarted()),
-      child: App(
-        authenticationRepository: authenticationRepository,
-        userRepository: userRepository,
-      ),
+    // Blocs injected here are global blocs lives throughout the
+    // entire app life.
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<ThemeBloc>()
+            ..add(
+              ThemeLoadStarted(),
+            ),
+        ),
+        BlocProvider(
+          create: (_) => sl<AuthenticationBloc>(),
+        ),
+      ],
+      child: App(),
     ),
   );
 }

@@ -35,7 +35,85 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Sign in with google`
+  String get google_sign_in_button {
+    return Intl.message(
+      'Sign in with google',
+      name: 'google_sign_in_button',
+      desc: '',
+      args: [],
+    );
+  }
 
+  /// `No Internet Connection`
+  String get no_internet_failure_title {
+    return Intl.message(
+      'No Internet Connection',
+      name: 'no_internet_failure_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` You need to be connected to the internet to login.`
+  String get login_no_internet_failure {
+    return Intl.message(
+      ' You need to be connected to the internet to login.',
+      name: 'login_no_internet_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` Please Check your internet settings.`
+  String get no_internet_message {
+    return Intl.message(
+      ' Please Check your internet settings.',
+      name: 'no_internet_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operation Failed`
+  String get operation_failed {
+    return Intl.message(
+      'Operation Failed',
+      name: 'operation_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` A problem occurred while linking your Google account. \n Please Try again.`
+  String get login_with_google_failure {
+    return Intl.message(
+      ' A problem occurred while linking your Google account. \n Please Try again.',
+      name: 'login_with_google_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` A problem occurred while setting up your account. \n Please Try again.`
+  String get new_user_setup_failure {
+    return Intl.message(
+      ' A problem occurred while setting up your account. \n Please Try again.',
+      name: 'new_user_setup_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You need to be connected to the internet to setup your new account.`
+  String get new_user_no_internet_failure {
+    return Intl.message(
+      'You need to be connected to the internet to setup your new account.',
+      name: 'new_user_no_internet_failure',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,3 +1,12 @@
 {
-  "@@locale": "ar"
+  "@@locale": "ar",
+  "google_sign_in_button" : "تسجيل الدخول بحساب قوقل",
+  "no_internet_failure_title" : "لا يوجد اتصال انترنت",
+  "login_no_internet_failure" : " يجب ان تكون متصلا بالانترنت لتتمكن من تسجيل الدخول.",
+  "login_with_google_failure" : " حدثت مشكلة اثناء ربط حساب قوقل الخاص بك.\n جرب مرة اخري.",
+  "no_internet_message" : " افحص اعدادات الانترنت الخاصة بك",
+  "operation_failed" : "فشلت العملية",
+  "new_user_setup_failure" : " حدثت مشكلة اثناء اعداد حسابك.\n جرب مرة اخري.",
+  "new_user_no_internet_failure" : " يجب ان تكون متصلا بالانترنت لتتمكن من اعداد حسابك."
+
 }

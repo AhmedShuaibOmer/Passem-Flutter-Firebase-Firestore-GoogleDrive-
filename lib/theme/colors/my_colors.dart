@@ -15,17 +15,16 @@ class MyColors {
   MyColors._();
 
   static Color primaryLightColor = Color(0xff5030bc);
-  static Color primaryColor50 = primaryColor.withAlpha(50);
 
   static const Color primaryColor = Color(0xff00008b);
 
   static Color primaryDarkColor = Color(0xff00005d);
 
-  static const Color secondaryColor = Colors.cyanAccent;
+  static const Color secondaryColor = Color(0xffff1654);
 
-  static Color secondaryLightColor = Colors.cyanAccent.shade100;
+  static Color secondaryLightColor = Color(0xffff6180);
 
-  static Color secondaryDarkColor = Colors.cyan.shade700;
+  static Color secondaryDarkColor = Color(0xffc4002c);
 
   static const Color primaryTextColor = Color(0xffffffff);
 

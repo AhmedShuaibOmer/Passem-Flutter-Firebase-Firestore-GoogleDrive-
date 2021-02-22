@@ -1,0 +1,20 @@
+name: domain
+description: A new Flutter package project.
+version: 0.0.1
+publish_to: 'none'
+author:
+  - Ahmed Shuaib <ahmed.shuaip600@gmail.com>
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  meta: ^1.1.8
+  equatable: ^1.2.5
+  bloc: ^6.0.0
+  # form_bloc: ^0.19.1
+  # Functional programming thingies
+  dartz: ^0.8.6
+
+dev_dependencies:
+  bloc_test: ^7.0.0

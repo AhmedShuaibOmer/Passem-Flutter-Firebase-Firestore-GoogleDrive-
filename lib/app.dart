@@ -5,51 +5,21 @@
  * Copyright (c) 2021 SafePass
  *
  */
-import 'package:authentication_repository/authentication_repository.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:user_repository/user_repository.dart';
 
-import 'authentication/authentication.dart';
 import 'generated/l10n.dart';
-import 'home/home.dart';
-import 'splash/splash.dart';
+import 'screens/screens.dart';
 import 'theme/theme.dart';
 
 class App extends StatelessWidget {
-  const App({
-    Key key,
-    @required this.authenticationRepository,
-    @required this.userRepository,
-  })  : assert(authenticationRepository != null),
-        assert(userRepository != null),
-        super(key: key);
-
-  final AuthenticationRepository authenticationRepository;
-  final UserRepository userRepository;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, themeState) {
-        return MultiRepositoryProvider(
-          providers: [
-            RepositoryProvider<AuthenticationRepository>(
-              create: (context) => authenticationRepository,
-            ),
-            RepositoryProvider<UserRepository>(
-              create: (context) => userRepository,
-            ),
-          ],
-          child: BlocProvider(
-            create: (_) => AuthenticationBloc(
-              authenticationRepository: authenticationRepository,
-              userRepository: userRepository,
-            ),
-            child: AppView(),
-          ),
-        );
+        return AppView();
       },
     );
   }
@@ -74,9 +44,7 @@ class _AppViewState extends State<AppView> {
       theme: DarkBlueTheme.lightTheme,
       darkTheme: DarkBlueTheme.darkTheme,
       localizationsDelegates: [
-        // 1
         S.delegate,
-        // 2
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -85,16 +53,23 @@ class _AppViewState extends State<AppView> {
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
+            print(state.status);
             switch (state.status) {
               case AuthenticationStatus.authenticated:
                 _navigator.pushAndRemoveUntil<void>(
-                  HomePage.route(),
+                  MainScreen.route(),
+                  (route) => false,
+                );
+                break;
+              case AuthenticationStatus.newUserAuthenticated:
+                _navigator.pushAndRemoveUntil<void>(
+                  NewUserScreen.route(),
                   (route) => false,
                 );
                 break;
               case AuthenticationStatus.unauthenticated:
                 _navigator.pushAndRemoveUntil<void>(
-                  AuthenticationPage.route(),
+                  LoginScreen.route(),
                   (route) => false,
                 );
                 break;
@@ -105,7 +80,7 @@ class _AppViewState extends State<AppView> {
           child: child,
         );
       },
-      onGenerateRoute: (_) => SplashPage.route(),
+      onGenerateRoute: (_) => SplashScreen.route(),
     );
   }
 }

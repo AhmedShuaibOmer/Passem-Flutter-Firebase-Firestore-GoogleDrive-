@@ -21,6 +21,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-
+    "google_sign_in_button" : MessageLookupByLibrary.simpleMessage("Sign in with google"),
+    "login_no_internet_failure" : MessageLookupByLibrary.simpleMessage(" You need to be connected to the internet to login."),
+    "login_with_google_failure" : MessageLookupByLibrary.simpleMessage(" A problem occurred while linking your Google account. \n Please Try again."),
+    "new_user_no_internet_failure" : MessageLookupByLibrary.simpleMessage("You need to be connected to the internet to setup your new account."),
+    "new_user_setup_failure" : MessageLookupByLibrary.simpleMessage(" A problem occurred while setting up your account. \n Please Try again."),
+    "no_internet_failure_title" : MessageLookupByLibrary.simpleMessage("No Internet Connection"),
+    "no_internet_message" : MessageLookupByLibrary.simpleMessage(" Please Check your internet settings."),
+    "operation_failed" : MessageLookupByLibrary.simpleMessage("Operation Failed")
   };
 }
