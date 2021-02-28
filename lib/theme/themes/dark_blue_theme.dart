@@ -24,6 +24,7 @@ class DarkBlueTheme {
       primaryColorBrightness: Brightness.dark,
       accentColorBrightness: Brightness.light,
       accentColor: MyColors.secondaryColor,
+      scaffoldBackgroundColor: Colors.white,
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           primary: MyColors.primaryColor,

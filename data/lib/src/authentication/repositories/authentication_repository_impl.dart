@@ -15,17 +15,21 @@ import '../../services/services.dart';
 
 class AuthenticationRepositoryImpl extends AuthenticationRepository {
   final FirestoreService _firestoreService;
+  final GoogleAuthService _googleAuthService;
   final FirebaseAuthService _firebaseAuthService;
   final NetworkInfo _networkInfo;
 
   AuthenticationRepositoryImpl({
     @required FirebaseAuthService firebaseAuthService,
+    @required GoogleAuthService googleAuthService,
     @required FirestoreService firestoreService,
     @required NetworkInfo networkInfo,
   })  : assert(firebaseAuthService != null),
         assert(firestoreService != null),
         assert(networkInfo != null),
+        assert(googleAuthService != null),
         this._firebaseAuthService = firebaseAuthService,
+        this._googleAuthService = googleAuthService,
         this._firestoreService = firestoreService,
         this._networkInfo = networkInfo;
 
@@ -74,7 +78,7 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository {
   Future<Either<Failure, bool>> requestDrivePermission() async {
     if (await _networkInfo.isConnected) {
       try {
-        final remoteData = await _firebaseAuthService.requestDrivePermission();
+        final remoteData = await _googleAuthService.requestDrivePermission();
         return Right(remoteData);
       } catch (e) {
         return Left(RequestPermissionFailure());

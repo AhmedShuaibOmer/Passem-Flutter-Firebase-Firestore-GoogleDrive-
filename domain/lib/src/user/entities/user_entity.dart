@@ -22,12 +22,16 @@ class UserEntity extends Equatable {
     @required this.role,
     @required this.photoUrl,
     @required this.universityId,
+    @required this.collegeId,
     @required this.courses,
-    @required this.uploadedDocuments,
-    @required this.starredDocuments,
+    @required this.sharedMaterials,
+    this.sharedMaterialsCount = 0,
+    @required this.starredMaterials,
     @required this.sharedHardBooks,
+    @required this.baseAppFolderId,
   })  : assert(email != null),
-        assert(id != null);
+        assert(id != null),
+        assert(sharedMaterialsCount != null);
 
   /// The current user's id.
   final String id;
@@ -47,14 +51,24 @@ class UserEntity extends Equatable {
   /// The current user's university ID.
   final String universityId;
 
+  /// The current user's college ID.
+  final String collegeId;
+
+  /// The id if the folder we save all the user user uploaded
+  /// materials in his drive storage.
+  final String baseAppFolderId;
+
   /// The current user's followed courses IDs.
   final List<String> courses;
 
-  /// The current user's uploaded documents IDs.
-  final List<String> uploadedDocuments;
+  /// The current user's shared materials IDs.
+  final List<String> sharedMaterials;
 
-  /// The current user's starred documents IDs.
-  final List<String> starredDocuments;
+  /// The current user's shared materials count.
+  final int sharedMaterialsCount;
+
+  /// The current user's starred materials IDs.
+  final List<String> starredMaterials;
 
   /// The current user's shared books IDs.
   final List<String> sharedHardBooks;
@@ -67,10 +81,12 @@ class UserEntity extends Equatable {
     role: null,
     photoUrl: null,
     universityId: null,
+    collegeId: null,
     courses: null,
-    uploadedDocuments: null,
-    starredDocuments: null,
+    sharedMaterials: null,
+    starredMaterials: null,
     sharedHardBooks: null,
+    baseAppFolderId: null,
   );
 
   @override
@@ -81,9 +97,12 @@ class UserEntity extends Equatable {
         role,
         photoUrl,
         universityId,
+        collegeId,
         courses,
-        uploadedDocuments,
-        starredDocuments,
+        sharedMaterials,
+        sharedMaterialsCount,
+        starredMaterials,
         sharedHardBooks,
+        baseAppFolderId,
       ];
 }

@@ -22,10 +22,13 @@ class User extends UserEntity {
     String role,
     String photoUrl,
     String universityId,
-    this.courses,
-    this.uploadedDocuments,
-    this.starredDocuments,
-    this.sharedHardBooks,
+    String collegeId,
+    String baseAppFolderId,
+    List<String> courses,
+    List<String> sharedMaterials,
+    int sharedMaterialsCount,
+    List<String> starredMaterials,
+    List<String> sharedHardBooks,
   }) : super(
           id: id,
           name: name,
@@ -33,9 +36,12 @@ class User extends UserEntity {
           role: role,
           photoUrl: photoUrl,
           universityId: universityId,
+          collegeId: collegeId,
+          baseAppFolderId: baseAppFolderId,
           courses: courses,
-          uploadedDocuments: uploadedDocuments,
-          starredDocuments: starredDocuments,
+          sharedMaterials: sharedMaterials,
+          sharedMaterialsCount: sharedMaterialsCount,
+          starredMaterials: starredMaterials,
           sharedHardBooks: sharedHardBooks,
         );
 
@@ -46,9 +52,12 @@ class User extends UserEntity {
     String role,
     String photoUrl,
     String universityId,
+    String collegeId,
+    String baseAppFolderId,
     List<String> courses,
-    List<String> uploadedDocuments,
-    List<String> starredDocuments,
+    List<String> sharedMaterials,
+    int sharedMaterialsCount,
+    List<String> starredMaterials,
     List<String> sharedHardBooks,
   }) =>
       User(
@@ -58,9 +67,12 @@ class User extends UserEntity {
         role: role ?? this.role,
         photoUrl: photoUrl ?? this.photoUrl,
         universityId: universityId ?? this.universityId,
+        collegeId: collegeId ?? this.collegeId,
+        baseAppFolderId: baseAppFolderId ?? this.baseAppFolderId,
         courses: courses ?? this.courses,
-        uploadedDocuments: uploadedDocuments ?? this.uploadedDocuments,
-        starredDocuments: starredDocuments ?? this.starredDocuments,
+        sharedMaterials: sharedMaterials ?? this.sharedMaterials,
+        sharedMaterialsCount: sharedMaterialsCount ?? this.sharedMaterialsCount,
+        starredMaterials: starredMaterials ?? this.starredMaterials,
         sharedHardBooks: sharedHardBooks ?? this.sharedHardBooks,
       );
 
@@ -76,22 +88,6 @@ class User extends UserEntity {
   final String id;
 
   static toNull(_) => null;
-
-  /// the next four fields well be added as subCollections inside the
-  /// user document and they well be treated as collections,
-  /// so we won't map them to/from json.
-  @override
-  @JsonKey(ignore: true)
-  final List<String> courses;
-  @override
-  @JsonKey(ignore: true)
-  final List<String> uploadedDocuments;
-  @override
-  @JsonKey(ignore: true)
-  final List<String> starredDocuments;
-  @override
-  @JsonKey(ignore: true)
-  final List<String> sharedHardBooks;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

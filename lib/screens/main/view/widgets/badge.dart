@@ -10,8 +10,22 @@ import 'package:flutter/material.dart';
 
 class IconBadge extends StatefulWidget {
   final IconData icon;
+  final String badgeText;
 
-  IconBadge({Key key, @required this.icon}) : super(key: key);
+  final Function onPressed;
+
+  final Color iconColor;
+  final Color badgeColor;
+  final Color onBadgeColor;
+
+  IconBadge(
+      {Key key,
+      @required this.icon,
+      this.badgeText,
+      @required this.onPressed,
+      this.iconColor,
+      this.badgeColor, this.onBadgeColor})
+      : super(key: key);
 
   @override
   _IconBadgeState createState() => _IconBadgeState();
@@ -22,16 +36,21 @@ class _IconBadgeState extends State<IconBadge> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Icon(
-          widget.icon,
-          color: Theme.of(context).primaryColor,
+        IconButton(
+          icon: Icon(
+            widget.icon,
+            color: widget.iconColor,
+          ),
+          onPressed: widget.onPressed,
         ),
-        Positioned(
-          right: 0.0,
+        Positioned.directional(
+          textDirection: Directionality.of(context),
+          end: 4,
+          bottom: 4,
           child: Container(
-            padding: EdgeInsets.all(1),
+            padding: EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: Theme.of(context).accentColor,
+              color: widget.badgeColor ?? Theme.of(context).accentColor,
               borderRadius: BorderRadius.circular(6),
             ),
             constraints: BoxConstraints(
@@ -41,9 +60,10 @@ class _IconBadgeState extends State<IconBadge> {
             child: Padding(
               padding: EdgeInsets.only(top: 1),
               child: Text(
-                '2',
+                widget.badgeText,
                 style: TextStyle(
-                  color: Colors.white,
+                  color:
+                      widget.onBadgeColor ?? Colors.white,
                   fontSize: 8,
                 ),
                 textAlign: TextAlign.center,

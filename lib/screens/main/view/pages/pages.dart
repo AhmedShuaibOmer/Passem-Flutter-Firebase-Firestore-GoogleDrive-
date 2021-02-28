@@ -7,3 +7,7 @@
  */
 
 export 'home/home_page.dart';
+export 'my_courses/my_courses_page.dart';
+export 'offline/offline_page.dart';
+export 'search/search.dart';
+export 'starred/starred_page.dart';

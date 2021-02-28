@@ -8,4 +8,4 @@
 
 export 'entities/university_entity.dart';
 export 'error/failures.dart';
-export 'repositories/universityRepository.dart';
+export 'repositories/university_repository.dart';

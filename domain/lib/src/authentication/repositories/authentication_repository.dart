@@ -13,6 +13,7 @@ enum AuthenticationStatus {
   authenticated,
   newUserAuthenticated,
   unauthenticated,
+  authenticationFailed,
   unknown
 }
 

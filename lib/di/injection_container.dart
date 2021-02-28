@@ -10,6 +10,7 @@ import 'package:data/data.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:domain/domain.dart';
 import 'package:get_it/get_it.dart';
+import 'package:passem/screens/main/bloc/navigation_bloc.dart';
 import 'package:passem/theme/bloc/theme_bloc.dart';
 
 GetIt sl = GetIt.instance;
@@ -26,6 +27,8 @@ Future<void> initDI() async {
     () => AuthenticationBloc(
       authenticationRepository: sl(),
       userRepository: sl(),
+      collegeRepository: sl(),
+      universityRepository: sl(),
     ),
   );
 
@@ -42,11 +45,16 @@ Future<void> initDI() async {
     ),
   );
 
+  sl.registerFactory(
+    () => NavigationBloc(),
+  );
+
   //! Repositories
   sl.registerLazySingleton<AuthenticationRepository>(
       () => AuthenticationRepositoryImpl(
             firestoreService: sl(),
             firebaseAuthService: sl(),
+            googleAuthService: sl(),
             networkInfo: sl(),
           ));
 
@@ -61,6 +69,27 @@ Future<void> initDI() async {
   sl.registerLazySingleton<UniversityRepository>(
     () => UniversityRepositoryImpl(
       firestoreService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<CollegeRepository>(
+    () => CollegeRepositoryImpl(
+      firestoreService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<CourseRepository>(
+    () => CourseRepositoryImpl(
+      firestoreService: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<StudyMaterialRepository>(
+    () => StudyMaterialRepositoryImpl(
+      firestoreService: sl(),
+      networkInfo: sl(),
+      googleDriveService: sl(),
     ),
   );
 
@@ -80,6 +109,12 @@ Future<void> initDI() async {
 
   final firebaseAuthService = FirebaseAuthService.instance;
   sl.registerLazySingleton(() => firebaseAuthService);
+
+  final googleDriveService = GoogleDriveService.instance;
+  sl.registerLazySingleton(() => googleDriveService);
+
+  final googleAuthService = GoogleAuthService.instance;
+  sl.registerLazySingleton(() => googleAuthService);
 
   //! External
   sl.registerLazySingleton(() => DataConnectionChecker());

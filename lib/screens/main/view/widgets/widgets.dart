@@ -7,4 +7,6 @@
  */
 
 export 'badge.dart';
-export 'search_card.dart';
+export 'custom_bottom_navigation_bar.dart';
+export 'custom_tab_indicator.dart';
+export 'search_field.dart';

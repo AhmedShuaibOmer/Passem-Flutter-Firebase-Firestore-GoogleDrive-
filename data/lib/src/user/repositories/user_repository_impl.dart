@@ -30,21 +30,13 @@ class UserRepositoryImpl extends UserRepository {
         this._firestoreService = firestoreService,
         this._networkInfo = networkInfo;
 
-  final _controller = StreamController<UserEntity>();
-
   @override
-  Stream<UserEntity> get userChanges async* {
-    yield* _controller.stream;
-  }
+  Stream<UserEntity> get userChanges => _firestoreService.userChanges;
 
   @override
   Future<Either<Failure, void>> tryFetchUser() async {
     try {
-      final currentUserId = _firebaseAuthService.currentUserId;
-      _firestoreService.getUser(userId: currentUserId).then((value) {
-        _controller.add(value);
-        print('User Entity emitted : $value');
-      });
+      _firestoreService.getUser();
       return Right(() {});
     } catch (e) {
       return Left(UserFetchingFailure());
@@ -53,7 +45,7 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   void dispose() {
-    _controller.close();
+    _firestoreService.dispose();
   }
 
   @override
@@ -65,28 +57,58 @@ class UserRepositoryImpl extends UserRepository {
   }) async {
     if (await _networkInfo.isConnected) {
       try {
-        final currentUserId = _firebaseAuthService.currentUserId;
-
         if (name != null) await _firebaseAuthService.updateUserName(name);
 
         if (photoUrl != '') _firebaseAuthService.updateUserProfilePic(photoUrl);
 
         await _firestoreService.updateUser(
-          userId: currentUserId,
           name: name,
           role: role,
           universityId: universityId,
           photoUrl: photoUrl,
         );
-        _controller.add(
-          await _firestoreService.getUser(
-            userId: currentUserId,
-          ),
-        );
         return Right(() {});
       } catch (e) {
         print(e);
         return Left(UserUpdateFailure());
+      }
+    } else {
+      return Left(NoConnectionFailure());
+    }
+  }
+
+  @override
+  Stream<List<UserEntity>> get mostContributors =>
+      _firestoreService.mostContributors();
+
+  @override
+  Future<Either<Failure, void>> subscribeToCourse(String courseId) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        await _firestoreService.subscribeToCourse(
+          courseId: courseId,
+        );
+        return Right(() {});
+      } catch (e) {
+        print(e);
+        return Left(SubscribeToCourseFailure());
+      }
+    } else {
+      return Left(NoConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> unsubscribeFromCourse(String courseId) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        await _firestoreService.unsubscribeFromCourse(
+          courseId: courseId,
+        );
+        return Right(() {});
+      } catch (e) {
+        print(e);
+        return Left(UnsubscribeFromCourseFailure());
       }
     } else {
       return Left(NoConnectionFailure());

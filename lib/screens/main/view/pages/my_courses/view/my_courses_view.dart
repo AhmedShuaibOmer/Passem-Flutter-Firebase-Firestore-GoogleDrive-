@@ -5,3 +5,11 @@
  * Copyright (c) 2021.  A.S.Omer
  *
  */
+import 'package:flutter/material.dart';
+
+class MyCoursesView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+}

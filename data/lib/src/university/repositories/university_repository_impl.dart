@@ -7,7 +7,8 @@
  */
 
 import 'package:dartz/dartz.dart';
-import 'package:data/src/services/services.dart';
+import '../../services/services.dart';
+import '../models/university_model.dart';
 import 'package:domain/domain.dart';
 
 class UniversityRepositoryImpl extends UniversityRepository {
@@ -16,6 +17,19 @@ class UniversityRepositoryImpl extends UniversityRepository {
   UniversityRepositoryImpl({FirestoreService firestoreService})
       : assert(firestoreService != null),
         this._firestoreService = firestoreService;
+
+  @override
+  Future<Either<Failure, UniversityEntity>> get currentUserUniversity async {
+    try {
+      University university;
+      await _firestoreService
+          .getUniversity()
+          .then((value) => university = value);
+      return Right(university);
+    } catch (e) {
+      return Left(UniversityFetchingFailure());
+    }
+  }
 
   @override
   Future<Either<Failure, List<UniversityEntity>>> getAllUniversities() async {

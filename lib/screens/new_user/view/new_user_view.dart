@@ -6,7 +6,6 @@
  *
  */
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:domain/domain.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -73,20 +72,10 @@ class NewUserView extends StatelessWidget {
                             radius: 60,
                             backgroundColor: Colors.transparent,
                             child: ClipOval(
-                              child: CachedNetworkImage(
-                                maxHeightDiskCache: 300,
-                                maxWidthDiskCache: 300,
-                                imageUrl: userPhoto.substring(
-                                        0, userPhoto.length - 15) +
-                                    's600-c/photo.jpg',
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
-                            ),
+                                child: ProfileImage(
+                              userPhotoUrl: userPhoto,
+                              scale: 600,
+                            )),
                           );
                         },
                       ),

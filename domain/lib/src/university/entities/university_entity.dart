@@ -22,6 +22,13 @@ class UniversityEntity extends Equatable {
 
   final String logoUrl;
 
+  /// Empty university.
+  static const empty = UniversityEntity(
+    id: '',
+    name: '',
+    logoUrl: null,
+  );
+
   @override
   List<Object> get props => [id, name, logoUrl];
 }

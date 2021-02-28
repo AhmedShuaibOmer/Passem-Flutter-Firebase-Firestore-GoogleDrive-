@@ -16,6 +16,10 @@ abstract class UserRepository {
   /// Emits an updated user after each update to the user info.
   Stream<UserEntity> get userChanges;
 
+  /// Stream of the most contributed users based on the numer of materials
+  /// they added to the platform.
+  Stream<List<UserEntity>> get mostContributors;
+
   /// Tries to fetch the user from the server.
   ///
   /// Throws a [UserFetchingFailure] if an exception occurs.
@@ -27,6 +31,10 @@ abstract class UserRepository {
     String universityId,
     String photoUrl,
   });
+
+  Future<Either<Failure, void>> subscribeToCourse(String courseId);
+
+  Future<Either<Failure, void>> unsubscribeFromCourse(String courseId);
 
   /// Used to clean or the resources from the memory.
   void dispose();

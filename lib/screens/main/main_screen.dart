@@ -7,8 +7,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:passem/di/di.dart';
+import 'package:passem/screens/main/view/main_content.dart';
 
-import 'view/main_view.dart';
+import 'bloc/navigation_bloc.dart';
 
 class MainScreen extends StatelessWidget {
   static Route route() {
@@ -17,6 +20,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainView();
+    return BlocProvider(
+      create: (_) => sl<NavigationBloc>(),
+      child: MainContent(),
+    );
   }
 }

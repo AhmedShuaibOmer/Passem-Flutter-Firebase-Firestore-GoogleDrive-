@@ -25,7 +25,7 @@ class University extends UniversityEntity {
   /// we do not need to write the university id inside the document in firestore
   /// since it gonna be the document id.
   ///
-  /// this is a workaround to disallow including the file only in the
+  /// this is a workaround to disallow including the field only in the
   /// toJson function.
   @override
   @JsonKey(toJson: toNull, includeIfNull: false)
@@ -34,7 +34,7 @@ class University extends UniversityEntity {
   static toNull(_) => null;
 
   University copyWith({
-    String uid,
+    String id,
     String name,
     String logoUrl,
   }) =>

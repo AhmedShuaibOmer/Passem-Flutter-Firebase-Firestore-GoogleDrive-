@@ -8,13 +8,13 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis/drive/v3.dart' as drive;
 
 import '../../user/user.dart';
+import '../google_auth/google_auth_service.dart';
 
 class FirebaseAuthService {
-  static GoogleSignIn _googleSignIn;
   static auth.FirebaseAuth _firebaseAuth;
+  static GoogleAuthService _googleAuthService;
   static FirebaseAuthService _instance;
 
   FirebaseAuthService._internal();
@@ -28,8 +28,8 @@ class FirebaseAuthService {
       _firebaseAuth = auth.FirebaseAuth.instance;
     }
 
-    if (_googleSignIn == null) {
-      _googleSignIn = GoogleSignIn.standard();
+    if (_googleAuthService == null) {
+      _googleAuthService = GoogleAuthService.instance;
     }
 
     return _instance;
@@ -46,13 +46,9 @@ class FirebaseAuthService {
 
   Future<bool> logInWithGoogle() async {
     bool isNewUser = false;
-    // Trigger the authentication flow
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
-    // Obtain the auth details from the request
     final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
+        await _googleAuthService.signIn();
     // Create a new credential
     final auth.GoogleAuthCredential credential =
         auth.GoogleAuthProvider.credential(
@@ -69,22 +65,10 @@ class FirebaseAuthService {
     return isNewUser;
   }
 
-  Future<bool> requestDrivePermission() async {
-    bool granted = false;
-    if (!await _googleSignIn.isSignedIn()) {
-      await logInWithGoogle();
-    }
-
-    await _googleSignIn.requestScopes([drive.DriveApi.DriveScope]).then(
-        (value) => granted = value);
-    print("User permission ${(granted) ? 'granted' : 'not granted'}");
-    return Future.value(granted);
-  }
-
   Future<void> logoutUser() async {
-    await _googleSignIn.signOut();
+    await _googleAuthService.signOut();
     await _firebaseAuth.signOut();
-    if (!await _googleSignIn.isSignedIn()) print("User Sign Out");
+    if (!await _googleAuthService.isSignedIn()) print("User Sign Out");
   }
 
   Future<void> updateUserName(String name) async {

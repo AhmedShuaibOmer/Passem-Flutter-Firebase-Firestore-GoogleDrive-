@@ -7,3 +7,4 @@
  */
 
 export 'main_screen.dart';
+export 'view/pages/pages.dart';

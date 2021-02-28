@@ -13,3 +13,9 @@ class UserFetchingFailure extends Failure {}
 
 /// Thrown during the updating user process if a failure occurs.
 class UserUpdateFailure extends Failure {}
+
+/// Thrown during subscribing the user to a course process if a failure occurs.
+class SubscribeToCourseFailure extends Failure {}
+
+/// Thrown during unsubscribe the user from a course process if a failure occurs.
+class UnsubscribeFromCourseFailure extends Failure {}

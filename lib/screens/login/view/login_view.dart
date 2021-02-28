@@ -6,9 +6,11 @@
  *
  */
 
+import 'package:auto_route/auto_route.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:passem/router/router.dart';
 
 import '../../../generated/l10n.dart';
 import '../../../widgets/widget.dart';
@@ -91,6 +93,10 @@ class LoginView extends StatelessWidget {
                   await context.read<LoginCubit>().loginWithGoogle();
                   // After [onPressed], it will trigger animation running backwards, from end to beginning
                   return () {
+                    ExtendedNavigator.of(context).pushAndRemoveUntil(
+                      Routes.mainScreen,
+                      (route) => false,
+                    );
                     // Optional returns is returning a VoidCallback that will be called
                     // after the animation is stopped at the beginning.
                     // A best practice would be to do time-consuming task in [onPressed],

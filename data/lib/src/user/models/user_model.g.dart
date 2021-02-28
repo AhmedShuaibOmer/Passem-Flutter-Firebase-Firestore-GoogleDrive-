@@ -14,6 +14,16 @@ User _$UserFromJson(Map<String, dynamic> json) {
     role: json['role'] as String,
     photoUrl: json['photoUrl'] as String,
     universityId: json['universityId'] as String,
+    collegeId: json['collegeId'] as String,
+    baseAppFolderId: json['baseAppFolderId'] as String,
+    courses: (json['courses'] as List)?.map((e) => e as String)?.toList(),
+    sharedMaterials:
+        (json['sharedMaterials'] as List)?.map((e) => e as String)?.toList(),
+    sharedMaterialsCount: json['sharedMaterialsCount'] as int,
+    starredMaterials:
+        (json['starredMaterials'] as List)?.map((e) => e as String)?.toList(),
+    sharedHardBooks:
+        (json['sharedHardBooks'] as List)?.map((e) => e as String)?.toList(),
   );
 }
 
@@ -24,6 +34,13 @@ Map<String, dynamic> _$UserToJson(User instance) {
     'role': instance.role,
     'photoUrl': instance.photoUrl,
     'universityId': instance.universityId,
+    'collegeId': instance.collegeId,
+    'baseAppFolderId': instance.baseAppFolderId,
+    'courses': instance.courses,
+    'sharedMaterials': instance.sharedMaterials,
+    'sharedMaterialsCount': instance.sharedMaterialsCount,
+    'starredMaterials': instance.starredMaterials,
+    'sharedHardBooks': instance.sharedHardBooks,
   };
 
   void writeNotNull(String key, dynamic value) {
