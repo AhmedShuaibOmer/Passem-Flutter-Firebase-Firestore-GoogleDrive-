@@ -7,6 +7,7 @@
  */
 
 import 'package:dartz/dartz.dart';
+import 'package:meta/meta.dart';
 
 import '../../../domain.dart';
 import '../entities/study_material_entity.dart';
@@ -17,17 +18,26 @@ abstract class StudyMaterialRepository {
   Future<Either<Failure, List<StudyMaterialEntity>>> getMaterials(
       List<String> materialsIds);
 
-  Stream<Either<Failure, List<StudyMaterialEntity>>> searchMaterials(
-    String query,
-  );
-
   Stream<List<StudyMaterialEntity>> materialsForCourse(
     String courseId,
     StudyMaterialType materialType,
   );
 
-  Future<Either<Failure, void>> addMaterial({
-    String filePath,
+  Future<Either<Failure, String>> addMaterial({
+    @required String name,
+    @required String description,
+    @required String materialUrl,
+    @required String courseId,
+    @required String courseName,
+    @required StudyMaterialType type,
+  });
+
+  Future<Either<Failure, String>> addExternalMaterial({
+    String url,
+    String description,
+    String title,
+    String courseId,
+    String courseName,
   });
 
   Future<Either<Failure, void>> deleteMaterial(
@@ -42,4 +52,9 @@ abstract class StudyMaterialRepository {
     String description,
     StudyMaterialType type,
   });
+
+  Future<Either<Failure, List<StudyMaterialEntity>>> getDownloadedMaterials();
+
+  Future<Either<Failure, bool>> addDownloadedMaterial(
+      StudyMaterialEntity materialEntity);
 }

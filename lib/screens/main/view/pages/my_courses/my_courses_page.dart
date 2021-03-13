@@ -5,13 +5,20 @@
  * Copyright (c) 2021.  A.S.Omer
  *
  */
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:passem/di/injection_container.dart';
 
 import 'view/my_courses_view.dart';
 
 class MyCoursesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MyCoursesView();
+    return BlocProvider(
+        create: (_) => MyCoursesBloc(
+              courseRepository: sl(),
+            ),
+        child: MyCoursesView());
   }
 }

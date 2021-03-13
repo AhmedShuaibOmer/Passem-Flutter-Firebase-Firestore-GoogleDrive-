@@ -21,6 +21,7 @@ class StudyMaterial extends StudyMaterialEntity {
     @required String thumbnailUrl,
     @required String iconUrl,
     @required String materialUrl,
+    @required this.localPath,
     @required String courseName,
     @required int created,
     @required this.type,
@@ -36,6 +37,7 @@ class StudyMaterial extends StudyMaterialEntity {
           iconUrl: iconUrl,
           materialUrl: materialUrl,
           courseName: courseName,
+          localPath: localPath,
           fileSize: fileSize,
           courseId: courseId,
           created: created,
@@ -55,6 +57,12 @@ class StudyMaterial extends StudyMaterialEntity {
   @JsonKey(toJson: toNull, includeIfNull: false)
   final String id;
 
+  /// this is a workaround to disallow including the field only in the
+  /// toJson function.
+  @override
+  @JsonKey(toJson: toNull, includeIfNull: false)
+  final String localPath;
+
   static toNull(_) => null;
 
   /// The Type of the current study material.
@@ -69,16 +77,44 @@ class StudyMaterial extends StudyMaterialEntity {
   final StudyMaterialType type;
 
   /// Converts [StudyMaterialType] into a [String].
-  static String materialTypeToString(StudyMaterialType type) => type.toString();
+  // ignore: missing_return
+  static String materialTypeToString(StudyMaterialType type) {
+    switch (type) {
+      case StudyMaterialType.generalDocument:
+        return 'generalDocument';
+      case StudyMaterialType.summary:
+        return 'summary';
+
+      case StudyMaterialType.lectureNotes:
+        return 'lectureNotes';
+
+      case StudyMaterialType.examPapers:
+        return 'examPapers';
+
+      case StudyMaterialType.exercise:
+        return 'exercise';
+
+      case StudyMaterialType.externalResource:
+        return 'externalResource';
+    }
+  }
 
   /// Getting [StudyMaterialType] from a [String].
   static StudyMaterialType materialTypeFromString(String typeString) {
     for (StudyMaterialType type in StudyMaterialType.values) {
-      if (type.toString() == typeString) {
+      if (materialTypeToString(type) == typeString) {
         return type;
       }
     }
     return null;
+  }
+
+  static String googleDriveIdFromUrl(String driveUrl) {
+    RegExp regExp = RegExp(r"([a-z0-9_-]{25,})[$/&?]",
+        multiLine: true, caseSensitive: false);
+    var match = regExp.stringMatch(driveUrl);
+
+    return match.substring(0, match.length - 1);
   }
 
   StudyMaterial copyWith({
@@ -89,6 +125,7 @@ class StudyMaterial extends StudyMaterialEntity {
     String iconUrl,
     String materialUrl,
     String courseName,
+    String localPath,
     int created,
     StudyMaterialType type,
     String courseId,
@@ -102,6 +139,7 @@ class StudyMaterial extends StudyMaterialEntity {
         thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
         iconUrl: iconUrl ?? this.iconUrl,
         materialUrl: materialUrl ?? this.materialUrl,
+        localPath: localPath ?? this.localPath,
         courseName: courseName ?? this.courseName,
         courseId: courseId ?? this.courseId,
         created: created ?? this.created,
@@ -110,8 +148,12 @@ class StudyMaterial extends StudyMaterialEntity {
         uploaderId: uploaderId ?? this.uploaderId,
       );
 
+
   factory StudyMaterial.fromJson(Map<String, dynamic> json) =>
       _$StudyMaterialFromJson(json);
 
   Map<String, dynamic> toJson() => _$StudyMaterialToJson(this);
+
+  static Map<String, dynamic> jsonFrom(StudyMaterial materialEntity) =>
+      _$StudyMaterialToJson(materialEntity);
 }

@@ -13,6 +13,4 @@ class LogInFailure extends Failure {}
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure extends Failure {}
 
-/// Thrown during any permission request process if a failure occurs.
-class RequestPermissionFailure extends Failure {}
 

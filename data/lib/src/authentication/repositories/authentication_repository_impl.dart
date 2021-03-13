@@ -8,6 +8,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:data/data.dart';
 import 'package:domain/domain.dart';
 import 'package:meta/meta.dart';
 
@@ -15,97 +16,63 @@ import '../../services/services.dart';
 
 class AuthenticationRepositoryImpl extends AuthenticationRepository {
   final FirestoreService _firestoreService;
-  final GoogleAuthService _googleAuthService;
   final FirebaseAuthService _firebaseAuthService;
-  final NetworkInfo _networkInfo;
 
   AuthenticationRepositoryImpl({
     @required FirebaseAuthService firebaseAuthService,
-    @required GoogleAuthService googleAuthService,
     @required FirestoreService firestoreService,
-    @required NetworkInfo networkInfo,
   })  : assert(firebaseAuthService != null),
         assert(firestoreService != null),
-        assert(networkInfo != null),
-        assert(googleAuthService != null),
         this._firebaseAuthService = firebaseAuthService,
-        this._googleAuthService = googleAuthService,
-        this._firestoreService = firestoreService,
-        this._networkInfo = networkInfo;
-
-  /// Controls the [status] stream to emit the currently authentication status.
-  final _controller = StreamController<AuthenticationStatus>();
+        this._firestoreService = firestoreService;
 
   //start listening for the authentication changes.
   @override
-  Stream<AuthenticationStatus> get status async* {
+  Stream<UserEntity> get user async* {
     // Check from cache if there is  user authenticated.
     final currentUser = _firebaseAuthService.currentUser;
 
     // null if there's no user authenticated.
     if (currentUser == null) {
-      yield AuthenticationStatus.unauthenticated;
+      yield UserEntity.empty;
     } else {
-      yield AuthenticationStatus.authenticated;
+      _firestoreService.getUser();
     }
-    // start listening to the stream of authentication status.
-    yield* _controller.stream;
+    // start listening to the stream of user changes.
+    yield* _firestoreService.userChanges;
   }
 
   @override
   Future<Either<Failure, void>> loginWithGoogle() async {
-    if (await _networkInfo.isConnected) {
-      try {
-        final isNewUser = await _firebaseAuthService.logInWithGoogle();
-        if (isNewUser) {
-          final newUser = _firebaseAuthService.currentUser;
-          _firestoreService.addNewUser(newUser);
-          _controller.add(AuthenticationStatus.newUserAuthenticated);
-        } else {
-          _controller.add(AuthenticationStatus.authenticated);
-        }
-        return Right(() {});
-      } catch (e) {
-        print('login failed: $e');
-        return Left(LogInFailure());
+    try {
+      final isNewUser = await _firebaseAuthService.logInWithGoogle();
+      if (isNewUser) {
+        final newUser = User(
+          id: _firebaseAuthService.currentUser.id,
+          name: _firebaseAuthService.currentUser.name,
+          email: _firebaseAuthService.currentUser.email,
+          photoUrl: _firebaseAuthService.currentUser.photoUrl,
+        );
+        await _firestoreService.addNewUser(newUser);
+      } else {
+        await _firestoreService.getUser();
       }
-    } else {
-      return Left(NoConnectionFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, bool>> requestDrivePermission() async {
-    if (await _networkInfo.isConnected) {
-      try {
-        final remoteData = await _googleAuthService.requestDrivePermission();
-        return Right(remoteData);
-      } catch (e) {
-        return Left(RequestPermissionFailure());
-      }
-    } else {
-      return Left(NoConnectionFailure());
+      return Right(() {});
+    } catch (e) {
+      print('login failed: $e');
+      return Left(LogInFailure());
     }
   }
 
   @override
   Future<Either<Failure, void>> logOutUser() async {
-    if (await _networkInfo.isConnected) {
-      try {
-        await _firebaseAuthService.logoutUser();
-        _controller.add(AuthenticationStatus.unauthenticated);
-        return Right(() {});
-      } catch (e) {
-        print('LogOut failed: $e');
-        return Left(LogOutFailure());
-      }
-    } else {
-      return Left(NoConnectionFailure());
+    try {
+      await _firebaseAuthService.logoutUser();
+      _firestoreService.userLoggedOut();
+      return Right(() {});
+    } catch (e) {
+      print('LogOut failed: $e');
+      return Left(LogOutFailure());
     }
-  }
-
-  @override
-  void dispose() {
-    _controller.close();
   }
 }

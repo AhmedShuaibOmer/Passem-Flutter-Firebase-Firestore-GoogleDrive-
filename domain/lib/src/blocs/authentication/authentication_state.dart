@@ -9,25 +9,28 @@
 
 part of 'authentication_bloc.dart';
 
+enum AuthenticationStatus {
+  loading,
+  authenticated,
+  newUserAuthenticated,
+  unauthenticated,
+  authenticationFailed,
+  unknown
+}
+
 class AuthenticationState extends Equatable {
   const AuthenticationState._({
     this.status = AuthenticationStatus.unknown,
     this.user = UserEntity.empty,
-    this.userUniversity = UniversityEntity.empty,
-    this.userCollege = CollegeEntity.empty,
   });
 
   const AuthenticationState.unknown() : this._();
 
-  const AuthenticationState.authenticated({
+  const AuthenticationState.authenticated(
     UserEntity currentUser,
-    UniversityEntity currentUserUniversity,
-    CollegeEntity currentUserCollege,
-  }) : this._(
+  ) : this._(
           status: AuthenticationStatus.authenticated,
           user: currentUser,
-          userUniversity: currentUserUniversity,
-          userCollege: currentUserCollege,
         );
 
   const AuthenticationState.newUserAuthenticated(UserEntity user)
@@ -39,11 +42,12 @@ class AuthenticationState extends Equatable {
   const AuthenticationState.authenticationFailed()
       : this._(status: AuthenticationStatus.authenticationFailed);
 
+  const AuthenticationState.loading()
+      : this._(status: AuthenticationStatus.loading);
+
   final AuthenticationStatus status;
   final UserEntity user;
-  final UniversityEntity userUniversity;
-  final CollegeEntity userCollege;
 
   @override
-  List<Object> get props => [status, user, userUniversity, userCollege];
+  List<Object> get props => [status, user];
 }

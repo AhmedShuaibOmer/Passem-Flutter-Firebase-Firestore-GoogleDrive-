@@ -8,6 +8,12 @@
 
 part of 'home_bloc.dart';
 
-abstract class HomeEvent extends Equatable {
+abstract class HomeEvent {
   const HomeEvent();
+}
+
+class SearchTextChanged extends HomeEvent {
+  final String query;
+
+  SearchTextChanged(this.query);
 }

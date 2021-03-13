@@ -7,6 +7,8 @@
  */
 
 class SharedPrefKeys {
+  static const String DOWNLOADED_MATERIALS = 'downloadedMaterials';
+
   SharedPrefKeys._();
   static const String THEME_MODE = 'themeMode';
 }

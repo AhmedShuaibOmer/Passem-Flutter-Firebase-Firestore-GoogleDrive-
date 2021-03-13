@@ -19,3 +19,7 @@ class SubscribeToCourseFailure extends Failure {}
 
 /// Thrown during unsubscribe the user from a course process if a failure occurs.
 class UnsubscribeFromCourseFailure extends Failure {}
+
+class StarringMaterialFailure extends Failure {}
+
+class UnStarringMaterialFailure extends Failure {}

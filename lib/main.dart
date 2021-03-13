@@ -35,6 +35,9 @@ void main() async {
         BlocProvider(
           create: (_) => sl<AuthenticationBloc>(),
         ),
+        BlocProvider(
+          create: (_) => sl<OfflineBloc>()..add(OfflineMaterialsChanged()),
+        ),
       ],
       child: App(),
     ),

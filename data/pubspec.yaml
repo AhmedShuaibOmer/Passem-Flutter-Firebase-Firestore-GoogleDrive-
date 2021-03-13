@@ -19,21 +19,15 @@ dependencies:
   # Json annotator
   json_annotation: ^3.1.1
   # local data persistence
-  shared_preferences: ^0.5.12+4
+  shared_preferences: ^2.0.3
 
-  file_picker: ^2.1.6
-  path: ^1.7.0
   # remote data
-  firebase_core: "^0.7.0"
-  firebase_auth: ^0.20.0+1
-  cloud_firestore: "^0.16.0"
-  googleapis: ^0.56.1
-  google_sign_in: ^4.5.9
+  firebase_core: "^1.0.0"
+  firebase_auth: ^1.0.0
+  cloud_firestore: "^1.0.0"
+  google_sign_in: ^5.0.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  mockito: ^4.1.4
   json_serializable: ^3.5.1
   build_test: ^1.3.6
   build_runner: ^1.11.1

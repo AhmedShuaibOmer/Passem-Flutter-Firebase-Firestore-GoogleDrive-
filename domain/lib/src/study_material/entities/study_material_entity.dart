@@ -14,7 +14,7 @@ enum StudyMaterialType {
   summary,
   lectureNotes,
   examPapers,
-  tutorial,
+  exercise,
   externalResource,
 }
 
@@ -28,6 +28,9 @@ class StudyMaterialEntity extends Equatable {
   final String iconUrl;
   final String materialUrl;
   final String courseName;
+
+  /// the of the study material on the device if its downloaded.
+  final String localPath;
   final String courseId;
   final String uploaderName;
   final String uploaderId;
@@ -44,6 +47,7 @@ class StudyMaterialEntity extends Equatable {
     this.thumbnailUrl,
     this.iconUrl,
     this.fileSize,
+    this.localPath,
     @required this.materialUrl,
     @required this.courseName,
     @required this.created,
@@ -71,6 +75,7 @@ class StudyMaterialEntity extends Equatable {
         materialUrl,
         courseName,
         courseId,
+        localPath,
         fileSize,
         created,
         type,

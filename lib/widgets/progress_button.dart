@@ -6,216 +6,224 @@
  *
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-enum ProgressButtonState {
-  Default,
-  Processing,
-}
-
-enum ProgressButtonType {
-  Raised,
-  Flat,
-  Outline,
-}
-
+/// A button that animates between state changes.
+/// Progress state is just a small circle with a progress indicator inside
+/// Error state is a vibrating error animation
+/// Normal state is the button itself
 class ProgressButton extends StatefulWidget {
-  final Widget defaultWidget;
-  final Widget progressWidget;
-  final Function onPressed;
-  final ProgressButtonType type;
-  final Color color;
-  final double width;
-  final double height;
-  final double borderRadius;
-  final bool animate;
+  final VoidCallback onPressed;
+  final Widget child;
+  final Color backgroundColor;
+  final Color progressColor;
+  final double cornersRadius;
+  final ProgressButtonController controller;
 
-  ProgressButton({
-    Key key,
-    this.defaultWidget,
-    this.progressWidget,
-    this.onPressed,
-    this.type = ProgressButtonType.Raised,
-    this.color,
-    this.width,
-    this.height,
-    this.borderRadius,
-    this.animate = true,
-  }) : super(key: key);
+  ProgressButton(
+      {Key key,
+      @required this.onPressed,
+      this.child,
+      this.backgroundColor,
+      this.progressColor,
+      this.cornersRadius,
+      @required this.controller})
+      : super(key: key);
 
   @override
   _ProgressButtonState createState() => _ProgressButtonState();
 }
 
+enum ProgressButtonState { inProgress, error, normal }
+
 class _ProgressButtonState extends State<ProgressButton>
     with TickerProviderStateMixin {
-  GlobalKey _globalKey = GlobalKey();
-  Animation _anim;
-  AnimationController _animController;
-  Duration _duration = const Duration(milliseconds: 250);
-  ProgressButtonState _state;
-  double _width;
-  double _height;
-  double _borderRadius;
+  AnimationController _errorAnimationController;
+  AnimationController _progressAnimationController;
+  Animation<Offset> _errorAnimation;
+  Animation<BorderRadius> _borderAnimation;
+  Animation<double> _widthAnimation;
 
-  @override
-  dispose() {
-    _animController?.dispose();
-    super.dispose();
-  }
+  double get buttonWidth => _widthAnimation.value ?? 0;
+  BorderRadius get borderRadius =>
+      _borderAnimation.value ?? BorderRadius.circular(12);
 
-  @override
-  void deactivate() {
-    _reset();
-    super.deactivate();
-  }
+  Color get backgroundColor =>
+      widget.backgroundColor ?? Theme.of(context).primaryColor;
+
+  Color get progressColor => widget.progressColor ?? Colors.white;
+
+  Widget get child => widget.child ?? Container();
+
+  ProgressButtonState _currentState = ProgressButtonState.normal;
+  ProgressButtonState _oldState = ProgressButtonState.normal;
+
+  StreamSubscription<ProgressButtonState> _stateSubscription;
 
   @override
   void initState() {
-    _reset();
     super.initState();
+    _stateSubscription = widget.controller.stateChanges.listen((event) {
+      print('state changed $event');
+      setButtonState(event);
+    });
+    _errorAnimationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 400));
+
+    _progressAnimationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 200));
+
+    // Define errorAnimation sequence
+    _errorAnimation = TweenSequence<Offset>([
+      TweenSequenceItem<Offset>(
+          tween: Tween(begin: Offset(0, 0), end: Offset(0.03, 0)), weight: 1),
+      TweenSequenceItem<Offset>(
+          tween: Tween(begin: Offset(0.03, 0), end: Offset(-0.03, 0)),
+          weight: 2),
+      TweenSequenceItem<Offset>(
+          tween: Tween(begin: Offset(-0.03, 0), end: Offset(0.03, 0)),
+          weight: 2),
+      TweenSequenceItem<Offset>(
+          tween: Tween(begin: Offset(0.03, 0), end: Offset(-0.03, 0)),
+          weight: 2),
+      TweenSequenceItem<Offset>(
+          tween: Tween(begin: Offset(-0.03, 0), end: Offset(0, 0)), weight: 1)
+    ]).animate(CurvedAnimation(
+      parent: _errorAnimationController,
+      curve: Curves.linear,
+    ));
   }
 
-  void _reset() {
-    _state = ProgressButtonState.Default;
-    _width = widget.width;
-    _height = widget.height;
-    _borderRadius = widget.borderRadius;
+  @override
+  void didUpdateWidget(ProgressButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // React to state changes by comparing old and new state
+    if (_oldState != ProgressButtonState.error &&
+        _currentState == ProgressButtonState.error) {
+      _errorAnimationController.reset();
+      _errorAnimationController.forward();
+    }
+    if (_oldState != ProgressButtonState.inProgress &&
+        _currentState == ProgressButtonState.inProgress) {
+      _progressAnimationController.stop();
+      _progressAnimationController.forward();
+    }
+    if (_oldState == ProgressButtonState.inProgress &&
+        _currentState != ProgressButtonState.inProgress) {
+      _progressAnimationController.stop();
+      _progressAnimationController.reverse();
+    }
+  }
+
+  /// A utility function to check whether an animation is running
+  bool isAnimationRunning(AnimationController controller) {
+    return !controller.isCompleted && !controller.isDismissed;
   }
 
   @override
   Widget build(BuildContext context) {
-    return PhysicalModel(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(
-        _borderRadius,
-      ),
-      child: Container(
-        key: _globalKey,
-        height: _height,
-        width: _width,
-        child: _buildChild(context),
-      ),
-    );
+    return getErrorAnimatedBuilder();
   }
 
-  Widget _buildChild(BuildContext context) {
-    var padding = const EdgeInsets.all(0.0);
-    var color = widget.color;
-    var shape = RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(_borderRadius));
-
-    switch (widget.type) {
-      case ProgressButtonType.Raised:
-        return RaisedButton(
-          padding: padding,
-          color: color,
-          shape: shape,
-          child: _buildChildren(context),
-          onPressed: _onButtonPressed(),
-        );
-      case ProgressButtonType.Flat:
-        return FlatButton(
-          padding: padding,
-          color: color,
-          shape: shape,
-          child: _buildChildren(context),
-          onPressed: _onButtonPressed(),
-        );
-      case ProgressButtonType.Outline:
-        return OutlineButton(
-          padding: padding,
-          color: color,
-          shape: shape,
-          child: _buildChildren(context),
-          onPressed: _onButtonPressed(),
-        );
-    }
-  }
-
-  Widget _buildChildren(BuildContext context) {
-    Widget ret;
-    switch (_state) {
-      case ProgressButtonState.Default:
-        ret = widget.defaultWidget;
-        break;
-      case ProgressButtonState.Processing:
-        ret = widget.progressWidget ?? widget.defaultWidget;
-        break;
-    }
-    return ret;
-  }
-
-  VoidCallback _onButtonPressed() {
-    return widget.onPressed == null
-        ? null
-        : () async {
-            if (_state != ProgressButtonState.Default) {
-              return;
-            }
-
-            // The result of widget.onPressed() will be called as VoidCallback after button status is back to default.
-            VoidCallback onDefault;
-            if (widget.animate) {
-              _toProcessing();
-              _forward((status) {
-                if (status == AnimationStatus.dismissed) {
-                  _toDefault();
-                  if (onDefault != null && onDefault is VoidCallback) {
-                    onDefault();
-                  }
-                }
-              });
-              onDefault = await widget.onPressed();
-              _reverse();
-            } else {
-              _toProcessing();
-              onDefault = await widget.onPressed();
-              _toDefault();
-              if (onDefault != null && onDefault is VoidCallback) {
-                onDefault();
-              }
-            }
-          };
-  }
-
-  void _toProcessing() {
+  void setButtonState(ProgressButtonState newState) {
     setState(() {
-      _state = ProgressButtonState.Processing;
+      _oldState = _currentState;
+      _currentState = newState;
     });
   }
 
-  void _toDefault() {
-    if (mounted) {
-      setState(() {
-        _state = ProgressButtonState.Default;
-      });
-    } else {
-      _state = ProgressButtonState.Default;
-    }
-  }
-
-  void _forward(AnimationStatusListener stateListener) {
-    double initialWidth = _globalKey.currentContext.size.width;
-    double initialBorderRadius = widget.borderRadius;
-    double targetWidth = _height;
-    double targetBorderRadius = _height / 2;
-
-    _animController = AnimationController(duration: _duration, vsync: this);
-    _anim = Tween(begin: 0.0, end: 1.0).animate(_animController)
-      ..addListener(() {
-        setState(() {
-          _width = initialWidth - ((initialWidth - targetWidth) * _anim.value);
-          _borderRadius = initialBorderRadius -
-              ((initialBorderRadius - targetBorderRadius) * _anim.value);
+  AnimatedBuilder getErrorAnimatedBuilder() {
+    return AnimatedBuilder(
+        animation: _errorAnimationController,
+        builder: (context, child) {
+          return SlideTransition(
+              position: _errorAnimation,
+              child: LayoutBuilder(builder: getProgressAnimatedBuilder));
         });
-      })
-      ..addStatusListener(stateListener);
-
-    _animController.forward();
   }
 
-  void _reverse() {
-    _animController.reverse();
+  AnimatedBuilder getProgressAnimatedBuilder(
+      BuildContext context, BoxConstraints constraints) {
+    var buttonHeight = constraints.maxHeight;
+    var iButtonWidth = constraints.maxWidth;
+    // If there is no constraint on height, we should constrain it
+    if (buttonHeight == double.infinity) buttonHeight = 56;
+    if (iButtonWidth == double.infinity) iButtonWidth = 200;
+
+    // These animation configurations can be tweaked to have
+    // however you like it
+    _borderAnimation = BorderRadiusTween(
+            begin: BorderRadius.circular(widget.cornersRadius ?? 12),
+            end: BorderRadius.circular(buttonHeight / 2))
+        .animate(CurvedAnimation(
+            parent: _progressAnimationController, curve: Curves.linear));
+
+    _widthAnimation = Tween<double>(
+      begin: iButtonWidth,
+      end: buttonHeight, // Circular progress must be contained in a square
+    ).animate(CurvedAnimation(
+      parent: _progressAnimationController,
+      curve: Curves.linear,
+    ));
+
+    Widget buttonContent;
+
+    if (_currentState != ProgressButtonState.inProgress) {
+      buttonContent = child;
+    } else if (_currentState == ProgressButtonState.inProgress) {
+      buttonContent = SizedBox(
+          height: buttonHeight,
+          width: buttonHeight, // needs to be a square container
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: CircularProgressIndicator(
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(progressColor ?? Colors.white),
+              strokeWidth: 3,
+            ),
+          ));
+    }
+
+    return AnimatedBuilder(
+      animation: _progressAnimationController,
+      builder: (context, child) {
+        return InkWell(
+            onTap: widget.onPressed,
+            borderRadius: borderRadius,
+            // this fixes the ripple effect
+            child: Center(
+              child: Ink(
+                width: buttonWidth,
+                height: buttonHeight,
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius,
+                  color: backgroundColor,
+                ),
+                child: Center(child: buttonContent),
+              ),
+            ));
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _stateSubscription.cancel();
+    _errorAnimationController.dispose();
+    _progressAnimationController.dispose();
+    super.dispose();
+  }
+}
+
+class ProgressButtonController {
+  Stream<ProgressButtonState> get stateChanges async* {
+    yield* _controller.stream;
+  }
+
+  final _controller = StreamController<ProgressButtonState>();
+  void setButtonState(ProgressButtonState state) {
+    _controller.add(state);
   }
 }

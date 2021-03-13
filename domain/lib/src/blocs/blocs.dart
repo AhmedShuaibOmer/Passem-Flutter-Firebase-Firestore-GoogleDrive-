@@ -7,6 +7,6 @@
  */
 
 export 'authentication/authentication_bloc.dart';
-export 'login/login_cubit.dart';
+export 'course/course_bloc.dart';
 export 'main/main.dart';
-export 'newUser/new_user_cubit.dart';
+export 'newUser/new_user_bloc.dart';

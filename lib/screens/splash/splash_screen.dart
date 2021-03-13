@@ -13,10 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../router/router.dart';
 
 class SplashScreen extends StatelessWidget {
-  static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => SplashScreen());
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
@@ -35,6 +31,7 @@ class SplashScreen extends StatelessWidget {
               (route) => false,
             );
             break;
+          case AuthenticationStatus.authenticationFailed:
           case AuthenticationStatus.unauthenticated:
             ExtendedNavigator.of(context).pushAndRemoveUntil(
               Routes.loginScreen,
@@ -45,7 +42,8 @@ class SplashScreen extends StatelessWidget {
             break;
         }
       },
-      child: const Scaffold(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
         body: Center(child: CircularProgressIndicator()),
       ),
     );

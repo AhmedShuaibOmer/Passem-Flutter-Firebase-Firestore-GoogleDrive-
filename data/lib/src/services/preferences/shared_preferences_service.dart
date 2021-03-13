@@ -6,8 +6,12 @@
  *
  */
 
+import 'dart:convert';
+
+import 'package:domain/domain.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../study_material/study_material.dart';
 import 'shared_pref_keys.dart';
 
 class SharedPreferencesService {
@@ -36,4 +40,32 @@ class SharedPreferencesService {
       await _preferences.setInt(SharedPrefKeys.THEME_MODE, themeMode);
 
   int get themeModeInfo => _preferences.getInt(SharedPrefKeys.THEME_MODE);
+
+  Future<bool> addDownloadedMaterial(StudyMaterialEntity studyMaterial) async {
+    List<String> materials = _preferences.getStringList(
+      SharedPrefKeys.DOWNLOADED_MATERIALS,
+    );
+    String material = jsonEncode(StudyMaterial.jsonFrom(studyMaterial)
+      ..addAll({"id": studyMaterial.id}));
+    if (materials != null) {
+      materials.add(material);
+    } else {
+      materials = [material];
+    }
+    return _preferences.setStringList(
+      SharedPrefKeys.DOWNLOADED_MATERIALS,
+      materials,
+    );
+  }
+
+  List<StudyMaterial> get downloadedMaterials {
+    List<StudyMaterial> materials = [];
+    List<String> jsonMaterials =
+        _preferences.getStringList(SharedPrefKeys.DOWNLOADED_MATERIALS);
+    for (var jsonMaterial in jsonMaterials) {
+      Map<String, dynamic> material = jsonDecode(jsonMaterial);
+      materials.add(StudyMaterial.fromJson(material));
+    }
+    return materials;
+  }
 }

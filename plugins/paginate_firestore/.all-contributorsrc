@@ -1,0 +1,60 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "adamdupuis",
+      "name": "Adam Dupuis",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6547826?v=4",
+      "profile": "https://adamdupuis.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "GauthamAsir",
+      "name": "Gautham",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/26927742?v=4",
+      "profile": "https://gauthamasir.github.io/Portfolio_Dart/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "imhafeez",
+      "name": "Hafeez Ahmed",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/21155655?v=4",
+      "profile": "https://github.com/imhafeez",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "claudemircasa",
+      "name": "Claudemir Casa",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7956750?v=4",
+      "profile": "http://claudemir.casa",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Nikhil27b",
+      "name": "Nikhil27bYt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45140298?v=4",
+      "profile": "http://www.nikhil27.com",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "paginate_firestore",
+  "projectOwner": "excogitatr",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

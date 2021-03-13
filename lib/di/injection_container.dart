@@ -26,22 +26,14 @@ Future<void> initDI() async {
   sl.registerFactory(
     () => AuthenticationBloc(
       authenticationRepository: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => NewUserBloc(
+      universityRepository: sl(),
       userRepository: sl(),
       collegeRepository: sl(),
-      universityRepository: sl(),
-    ),
-  );
-
-  sl.registerFactory(
-    () => LoginCubit(
-      authenticationRepository: sl(),
-    ),
-  );
-
-  sl.registerFactory(
-    () => NewUserCubit(
-      universityRepository: sl(),
-      userRepository: sl(),
     ),
   );
 
@@ -49,13 +41,27 @@ Future<void> initDI() async {
     () => NavigationBloc(),
   );
 
+  sl.registerFactory(
+    () => HomeBloc(),
+  );
+
+  sl.registerFactory(
+    () => RecentlyAddedCubit(sl()),
+  );
+
+  sl.registerFactory(
+    () => MostContributorsCubit(sl()),
+  );
+
+  sl.registerFactory(
+    () => OfflineBloc(studyMaterialRepository: sl()),
+  );
+
   //! Repositories
   sl.registerLazySingleton<AuthenticationRepository>(
       () => AuthenticationRepositoryImpl(
             firestoreService: sl(),
             firebaseAuthService: sl(),
-            googleAuthService: sl(),
-            networkInfo: sl(),
           ));
 
   sl.registerLazySingleton<UserRepository>(
@@ -88,8 +94,7 @@ Future<void> initDI() async {
   sl.registerLazySingleton<StudyMaterialRepository>(
     () => StudyMaterialRepositoryImpl(
       firestoreService: sl(),
-      networkInfo: sl(),
-      googleDriveService: sl(),
+      networkInfo: sl(), sharedPreferencesService: sl(),
     ),
   );
 
@@ -109,9 +114,6 @@ Future<void> initDI() async {
 
   final firebaseAuthService = FirebaseAuthService.instance;
   sl.registerLazySingleton(() => firebaseAuthService);
-
-  final googleDriveService = GoogleDriveService.instance;
-  sl.registerLazySingleton(() => googleDriveService);
 
   final googleAuthService = GoogleAuthService.instance;
   sl.registerLazySingleton(() => googleAuthService);

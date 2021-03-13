@@ -8,6 +8,8 @@
 
 part of 'offline_bloc.dart';
 
-abstract class OfflineEvent extends Equatable {
-  const OfflineEvent();
+abstract class OfflineEvent {}
+
+class OfflineMaterialsChanged extends OfflineEvent {
+  OfflineMaterialsChanged();
 }

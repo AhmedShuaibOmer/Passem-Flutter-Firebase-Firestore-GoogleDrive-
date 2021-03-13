@@ -6,13 +6,19 @@
  *
  */
 
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../di/di.dart';
 import 'view/home_view.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return HomeView();
+    return BlocProvider(
+      create: (_) => sl<HomeBloc>(),
+      child: HomeView(),
+    );
   }
 }

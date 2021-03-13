@@ -9,9 +9,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-
-import '../../../router/router.dart';
 
 class NavigationBloc extends Bloc<int, int> {
   NavigationBloc() : super(NavigationTabs.first);
@@ -21,28 +18,11 @@ class NavigationBloc extends Bloc<int, int> {
     yield event;
   }
 
-  final tabs = const <NavigationTab>[
-    NavigationTab(
-      name: 'Home',
-      iconData: Feather.home,
-      initialRoute: MainScreenRoutes.homePage,
-    ),
-    NavigationTab(
-      name: 'My Courses',
-      iconData: Feather.archive,
-      initialRoute: MainScreenRoutes.myCoursesPage,
-    ),
-    NavigationTab(
-      name: 'Starred',
-      iconData: Feather.star,
-      initialRoute: MainScreenRoutes.starredPage,
-    ),
-    NavigationTab(
-      name: 'Offline',
-      iconData: Feather.download,
-      initialRoute: MainScreenRoutes.offlinePage,
-    ),
-  ];
+  List<NavigationTab> tabs = [];
+
+  void setTabs(List<NavigationTab> tabs) {
+    this.tabs = tabs;
+  }
 
   Future<bool> onWillPop() async {
     final currentNavigatorState = ExtendedNavigator.named(tabs[state].name);

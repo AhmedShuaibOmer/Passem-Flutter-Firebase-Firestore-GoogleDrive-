@@ -14,6 +14,7 @@ StudyMaterial _$StudyMaterialFromJson(Map<String, dynamic> json) {
     thumbnailUrl: json['thumbnailUrl'] as String,
     iconUrl: json['iconUrl'] as String,
     materialUrl: json['materialUrl'] as String,
+    localPath: json['localPath'] as String,
     courseName: json['courseName'] as String,
     created: json['created'] as int,
     type: StudyMaterial.materialTypeFromString(json['type'] as String),
@@ -46,6 +47,7 @@ Map<String, dynamic> _$StudyMaterialToJson(StudyMaterial instance) {
   }
 
   writeNotNull('id', StudyMaterial.toNull(instance.id));
+  writeNotNull('localPath', StudyMaterial.toNull(instance.localPath));
   val['type'] = StudyMaterial.materialTypeToString(instance.type);
   return val;
 }

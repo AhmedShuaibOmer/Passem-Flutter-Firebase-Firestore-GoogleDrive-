@@ -1,20 +1,29 @@
 {
   "project_info": {
     "project_number": "541313519237",
+    "firebase_url": "https://safepass-c7323-default-rtdb.firebaseio.com",
     "project_id": "safepass-c7323",
     "storage_bucket": "safepass-c7323.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:541313519237:android:bb5ef648cf75105841e3ec",
+        "mobilesdk_app_id": "1:541313519237:android:25e93056ce64455941e3ec",
         "android_client_info": {
           "package_name": "com.aso.passem"
         }
       },
       "oauth_client": [
         {
-          "client_id": "541313519237-7dtffjhq08a723vsj8rqq7apnd85qb3j.apps.googleusercontent.com",
+          "client_id": "541313519237-0m10kreos78oki2jrutu9nfmjcg1t06s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aso.passem",
+            "certificate_hash": "d0d5c602fee42b55c9458225c72fe1251e6f028e"
+          }
+        },
+        {
+          "client_id": "541313519237-86dtqnbkocq1hrmer5i8ce3s0p18d3ge.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.aso.passem",

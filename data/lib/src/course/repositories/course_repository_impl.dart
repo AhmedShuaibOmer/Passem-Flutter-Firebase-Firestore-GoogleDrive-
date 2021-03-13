@@ -70,9 +70,11 @@ class CourseRepositoryImpl extends CourseRepository {
       await _firestoreService
           .getCourses(coursesIds)
           .then((value) => courses = value);
+      print('courses now in the repo ${courses?.length}');
       return Right(courses);
     } catch (e) {
       if (await _networkInfo.isConnected) return Left(NoConnectionFailure());
+      print(e);
       return Left(CoursesFetchingFailure());
     }
   }

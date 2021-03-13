@@ -47,6 +47,6 @@ class DarkBlueTheme {
   }
 
   static ThemeData get darkTheme {
-    return ThemeData();
+    return lightTheme;
   }
 }

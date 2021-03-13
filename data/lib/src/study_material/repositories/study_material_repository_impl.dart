@@ -15,51 +15,40 @@ import '../../../data.dart';
 
 class StudyMaterialRepositoryImpl extends StudyMaterialRepository {
   final FirestoreService _firestoreService;
-  final GoogleDriveService _googleDriveService;
+  final SharedPreferencesService _preferencesService;
   final NetworkInfo _networkInfo;
 
   StudyMaterialRepositoryImpl({
+    @required SharedPreferencesService sharedPreferencesService,
     @required FirestoreService firestoreService,
-    @required GoogleDriveService googleDriveService,
     @required NetworkInfo networkInfo,
   })  : assert(firestoreService != null),
-        assert(googleDriveService != null),
+        assert(sharedPreferencesService != null),
         assert(networkInfo != null),
         this._firestoreService = firestoreService,
-        this._googleDriveService = googleDriveService,
+        this._preferencesService = sharedPreferencesService,
         this._networkInfo = networkInfo;
 
   @override
-  Future<Either<Failure, void>> addMaterial({
-    String filePath,
+  Future<Either<Failure, String>> addMaterial({
+    String name,
+    String description,
+    String materialUrl,
     String courseId,
     String courseName,
     StudyMaterialType type,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
-        final User currentUser = await _firestoreService.currentUser;
-        await _googleDriveService
-            .uploadFileToDrive(filePath: filePath)
-            .then((value) async {
-          final studyMaterial = StudyMaterial(
-            id: value.id,
-            label: value.name,
-            description: value.description,
-            thumbnailUrl: value.thumbnailLink,
-            materialUrl: value.webContentLink,
-            fileSize: value.size,
-            iconUrl: value.iconLink,
-            courseId: courseId,
-            courseName: courseName,
-            created: value.createdTime.millisecondsSinceEpoch,
-            type: type,
-            uploaderId: currentUser.id,
-            uploaderName: currentUser.name,
-          );
-          await _firestoreService.addStudyMaterial(studyMaterial);
-        });
-        return Right(() {});
+        String materialId = await _firestoreService.addStudyMaterial(
+          name: name,
+          description: description,
+          materialUrl: materialUrl,
+          courseId: courseId,
+          courseName: courseName,
+          type: type,
+        );
+        return Right(materialId);
       } catch (e) {
         print(e);
         return Left(UploadMaterialFailure());
@@ -77,9 +66,6 @@ class StudyMaterialRepositoryImpl extends StudyMaterialRepository {
   ) async {
     if (await _networkInfo.isConnected) {
       try {
-        if (ownedByMe) {
-          await _googleDriveService.deleteFileFromDrive(fileId: materialId);
-        }
         await _firestoreService.deleteStudyMaterial(
             materialId: materialId, uploaderId: uploaderId);
         return Right(() {});
@@ -100,11 +86,6 @@ class StudyMaterialRepositoryImpl extends StudyMaterialRepository {
   }) async {
     if (await _networkInfo.isConnected) {
       try {
-        await _googleDriveService.updateFile(
-          fileId: materialId,
-          name: label,
-          description: description,
-        );
         await _firestoreService.updateMaterial(
           materialId: materialId,
           name: label,
@@ -123,11 +104,10 @@ class StudyMaterialRepositoryImpl extends StudyMaterialRepository {
   Stream<List<StudyMaterialEntity>> materialsForCourse(
     String courseId,
     StudyMaterialType materialType,
-  ) =>
-      _firestoreService.materialsForCourse(
-        courseId: courseId,
-        materialType: materialType,
-      );
+  ) {
+    // TODO: implement searchMaterials
+    throw UnimplementedError();
+  }
 
   @override
   Stream<List<StudyMaterialEntity>> get recentlyAdded =>
@@ -152,6 +132,54 @@ class StudyMaterialRepositoryImpl extends StudyMaterialRepository {
       return Right(materials);
     } catch (e) {
       if (await _networkInfo.isConnected) return Left(NoConnectionFailure());
+      return Left(StudyMaterialsFetchingFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> addExternalMaterial({
+    String url,
+    String description,
+    String title,
+    String courseName,
+    String courseId,
+  }) async {
+    try {
+      String materialId = await _firestoreService.addExternalStudyMaterial(
+        courseId: courseId,
+        name: title,
+        description: description,
+        materialUrl: url,
+        courseName: courseName,
+      );
+      return Right(materialId);
+    } catch (e) {
+      print(e);
+      return Left(AddExternalMaterialFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<StudyMaterialEntity>>>
+      getDownloadedMaterials() async {
+    try {
+      List<StudyMaterial> materials = _preferencesService.downloadedMaterials;
+      return Right(materials);
+    } catch (e) {
+      print(e);
+      return Left(StudyMaterialsFetchingFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> addDownloadedMaterial(
+      StudyMaterialEntity materialEntity) async {
+    try {
+      bool result =
+          await _preferencesService.addDownloadedMaterial(materialEntity);
+      return Right(result);
+    } catch (e) {
+      print(e);
       return Left(StudyMaterialsFetchingFailure());
     }
   }

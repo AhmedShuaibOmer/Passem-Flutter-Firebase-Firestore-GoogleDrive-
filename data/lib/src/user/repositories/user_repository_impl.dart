@@ -31,19 +31,6 @@ class UserRepositoryImpl extends UserRepository {
         this._networkInfo = networkInfo;
 
   @override
-  Stream<UserEntity> get userChanges => _firestoreService.userChanges;
-
-  @override
-  Future<Either<Failure, void>> tryFetchUser() async {
-    try {
-      _firestoreService.getUser();
-      return Right(() {});
-    } catch (e) {
-      return Left(UserFetchingFailure());
-    }
-  }
-
-  @override
   void dispose() {
     _firestoreService.dispose();
   }
@@ -54,6 +41,7 @@ class UserRepositoryImpl extends UserRepository {
     String photoUrl = '',
     String role,
     String universityId,
+    String collegeId,
   }) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -65,6 +53,7 @@ class UserRepositoryImpl extends UserRepository {
           name: name,
           role: role,
           universityId: universityId,
+          collegeId: collegeId,
           photoUrl: photoUrl,
         );
         return Right(() {});
@@ -109,6 +98,41 @@ class UserRepositoryImpl extends UserRepository {
       } catch (e) {
         print(e);
         return Left(UnsubscribeFromCourseFailure());
+      }
+    } else {
+      return Left(NoConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> addMaterialToStarred(String materialId) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        await _firestoreService.addMaterialToStarred(
+          materialId: materialId,
+        );
+        return Right(() {});
+      } catch (e) {
+        print(e);
+        return Left(StarringMaterialFailure());
+      }
+    } else {
+      return Left(NoConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> removeMaterialFromStarred(
+      String materialId) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        await _firestoreService.removeMaterialFromStarred(
+          materialId: materialId,
+        );
+        return Right(() {});
+      } catch (e) {
+        print(e);
+        return Left(UnStarringMaterialFailure());
       }
     } else {
       return Left(NoConnectionFailure());

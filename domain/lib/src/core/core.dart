@@ -6,6 +6,6 @@
  *
  */
 
+export 'bloc/base_list_state.dart';
 export 'error/failures.dart';
 export 'network/network_info.dart';
-export 'usecases/usecase.dart';

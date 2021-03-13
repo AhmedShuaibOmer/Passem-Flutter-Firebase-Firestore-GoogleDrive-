@@ -23,9 +23,7 @@ class CollegeRepositoryImpl extends CollegeRepository {
   Future<Either<Failure, CollegeEntity>> get currentUserCollege async {
     try {
       College college;
-      await _firestoreService
-          .getCollege()
-          .then((value) => college = value);
+      await _firestoreService.getCollege().then((value) => college = value);
       return Right(college);
     } catch (e) {
       return Left(CollegeFetchingFailure());
@@ -39,8 +37,8 @@ class CollegeRepositoryImpl extends CollegeRepository {
       final colleges = await _firestoreService.getAllColleges(universityId);
       return Right(colleges);
     } catch (e) {
-      print('Fetch all universities failed: $e');
-      return Left(UniversityFetchingFailure());
+      print('Fetch all colleges failed: $e');
+      return Left(CollegeFetchingFailure());
     }
   }
 }

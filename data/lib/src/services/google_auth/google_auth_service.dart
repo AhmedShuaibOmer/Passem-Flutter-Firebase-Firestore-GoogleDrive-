@@ -6,8 +6,11 @@
  *
  */
 
+import 'package:domain/domain.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis/drive/v2.dart';
+
+/// Thrown during any permission request process if a failure occurs.
+class RequestPermissionFailure extends Failure {}
 
 class GoogleAuthService {
   static GoogleSignIn _googleSignIn;
@@ -37,18 +40,7 @@ class GoogleAuthService {
     return googleAuth;
   }
 
-  Future<bool> requestDrivePermission() async {
-    bool granted = false;
-    await _googleSignIn
-        .requestScopes([DriveApi.DriveScope]).then((value) => granted = value);
-    print("User permission ${(granted) ? 'granted' : 'not granted'}");
-    return Future.value(granted);
-  }
-
   Future<void> signOut() => _googleSignIn.signOut();
 
   Future<bool> isSignedIn() => _googleSignIn.isSignedIn();
-
-  Future<Map<String, String>> get authHeaders =>
-      _googleSignIn.currentUser.authHeaders;
 }

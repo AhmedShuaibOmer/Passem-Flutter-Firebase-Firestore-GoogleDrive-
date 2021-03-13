@@ -30,8 +30,7 @@ class UserEntity extends Equatable {
     @required this.sharedHardBooks,
     @required this.baseAppFolderId,
   })  : assert(email != null),
-        assert(id != null),
-        assert(sharedMaterialsCount != null);
+        assert(id != null);
 
   /// The current user's id.
   final String id;
@@ -88,6 +87,12 @@ class UserEntity extends Equatable {
     sharedHardBooks: null,
     baseAppFolderId: null,
   );
+
+  /// If true true the user haven't complete their sign up process.
+  bool get isNewUser =>
+      this.id.isNotEmpty &&
+      this.email.isNotEmpty &&
+      (this.universityId == null || this.collegeId == null);
 
   @override
   List<Object> get props => [

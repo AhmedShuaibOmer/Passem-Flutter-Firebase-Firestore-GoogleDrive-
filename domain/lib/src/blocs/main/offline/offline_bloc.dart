@@ -9,18 +9,49 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:domain/domain.dart';
 
 part 'offline_event.dart';
-part 'offline_state.dart';
 
-class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
-  OfflineBloc() : super(OfflineInitial());
+class OfflineBloc
+    extends Bloc<OfflineEvent, BaseListState<StudyMaterialEntity>> {
+  StudyMaterialRepository studyMaterialRepository;
+  OfflineBloc({
+    this.studyMaterialRepository,
+  }) : super(BaseListState.loading()) {}
 
   @override
-  Stream<OfflineState> mapEventToState(
+  Stream<BaseListState<StudyMaterialEntity>> mapEventToState(
     OfflineEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    if (event is OfflineMaterialsChanged) {
+      final response = await studyMaterialRepository.getDownloadedMaterials();
+      yield* response.fold((l) async* {
+        print('offline yielded failure data');
+        yield BaseListState.loaded(status: BaseListStatus.empty);
+      }, (r) async* {
+        if (r == null || r.isEmpty) {
+          print('offline yielded empty data ${r.length}');
+          yield BaseListState.loaded(status: BaseListStatus.empty);
+        } else {
+          print('offline yielded has data ${r.length}');
+          yield BaseListState.loaded(items: r, status: BaseListStatus.hasData);
+        }
+      });
+    }
+  }
+
+  Future<void> addDownloadedMaterial(StudyMaterialEntity materialEntity) async {
+    await studyMaterialRepository
+        .addDownloadedMaterial(materialEntity)
+        .then((value) {
+      value.fold((l) {
+        // TODO : Handle error case.
+      }, (r) {
+        if (r) {
+          add(OfflineMaterialsChanged());
+        }
+      });
+    });
   }
 }

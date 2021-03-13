@@ -8,11 +8,14 @@
 
 part of 'home_bloc.dart';
 
-abstract class HomeState extends Equatable {
+abstract class HomeState {
   const HomeState();
 }
 
-class HomeInitial extends HomeState {
-  @override
-  List<Object> get props => [];
+class HomeInitial extends HomeState {}
+
+class HomeSearchTextChange extends HomeState {
+  final String queryText;
+
+  const HomeSearchTextChange({this.queryText});
 }

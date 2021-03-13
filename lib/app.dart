@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:responsive_framework/responsive_wrapper.dart';
 
 import 'generated/l10n.dart';
 import 'router/router.dart';
@@ -26,36 +27,57 @@ class App extends StatelessWidget {
             statusBarColor: Colors.transparent, // transparent status bar
             systemNavigationBarColor: Theme.of(context)
                 .scaffoldBackgroundColor, // navigation bar color
-            statusBarIconBrightness: themeState.themeMode == ThemeMode.dark
-                ? Brightness.light
-                : Brightness.dark, // status bar icons' color
+            statusBarIconBrightness:
+                Brightness.light, // status bar icons' color
             systemNavigationBarIconBrightness:
-                themeState.themeMode == ThemeMode.dark
-                    ? Brightness.light
-                    : Brightness.dark, //navigation bar icons' color
+                Brightness.light, //navigation bar icons' color
           ),
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            themeMode: themeState.themeMode,
-            theme: DarkBlueTheme.lightTheme,
-            darkTheme: DarkBlueTheme.darkTheme,
-            localizationsDelegates: [
-              S.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: S.delegate.supportedLocales,
-            builder: (context, child) {
-              return ExtendedNavigator<AppRouter>(
-                //navigatorKey: _navigatorKey,
-                router: AppRouter(),
-                initialRoute: Routes.splashScreen,
-              );
-            },
-          ),
+          child: AppView(themeState: themeState),
         );
       },
+    );
+  }
+}
+
+class AppView extends StatelessWidget {
+  const AppView({
+    Key key,
+    @required this.themeState,
+  }) : super(key: key);
+
+  final ThemeState themeState;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      themeMode: themeState.themeMode,
+      theme: DarkBlueTheme.lightTheme,
+      darkTheme: DarkBlueTheme.darkTheme,
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      builder: (context, widget) => ResponsiveWrapper.builder(
+          ExtendedNavigator<AppRouter>(
+            //navigatorKey: _navigatorKey,
+            router: AppRouter(),
+            initialRoute: Routes.splashScreen,
+          ),
+          maxWidth: 1200,
+          minWidth: 480,
+          defaultScale: true,
+          breakpoints: [
+            ResponsiveBreakpoint.resize(480, name: MOBILE),
+            ResponsiveBreakpoint.autoScale(800, name: TABLET),
+            ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+          ],
+          background:
+              Container(color: Theme.of(context).scaffoldBackgroundColor),
+          backgroundColor: Theme.of(context).primaryColor),
     );
   }
 }

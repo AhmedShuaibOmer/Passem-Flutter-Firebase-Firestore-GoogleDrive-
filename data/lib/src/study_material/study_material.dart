@@ -6,4 +6,5 @@
  *
  */
 
+export 'models/study_material_model.dart';
 export 'repositories/study_material_repository_impl.dart';

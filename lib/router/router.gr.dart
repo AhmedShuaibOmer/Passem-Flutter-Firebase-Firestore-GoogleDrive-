@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:auto_route/auto_route.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/screens.dart';
@@ -15,11 +16,13 @@ class Routes {
   static const String splashScreen = '/splash-screen';
   static const String loginScreen = '/login-screen';
   static const String newUserScreen = '/new-user-screen';
+  static const String courseScreen = '/course-screen';
   static const String mainScreen = '/main-screen';
   static const all = <String>{
     splashScreen,
     loginScreen,
     newUserScreen,
+    courseScreen,
     mainScreen,
   };
 }
@@ -31,6 +34,7 @@ class AppRouter extends RouterBase {
     RouteDef(Routes.splashScreen, page: SplashScreen),
     RouteDef(Routes.loginScreen, page: LoginScreen),
     RouteDef(Routes.newUserScreen, page: NewUserScreen),
+    RouteDef(Routes.courseScreen, page: CourseScreen),
     RouteDef(
       Routes.mainScreen,
       page: MainScreen,
@@ -58,6 +62,19 @@ class AppRouter extends RouterBase {
         settings: data,
       );
     },
+    CourseScreen: (data) {
+      final args = data.getArgs<CourseScreenArguments>(
+        orElse: () => CourseScreenArguments(),
+      );
+      return MaterialPageRoute<void>(
+        builder: (context) => CourseScreen(
+          key: args.key,
+          course: args.course,
+          courseId: args.courseId,
+        ),
+        settings: data,
+      );
+    },
     MainScreen: (data) {
       return MaterialPageRoute<void>(
         builder: (context) => MainScreen(),
@@ -72,13 +89,11 @@ class MainScreenRoutes {
   static const String myCoursesPage = '/my-courses-page';
   static const String starredPage = '/starred-page';
   static const String offlinePage = '/offline-page';
-  static const String searchPage = '/search-page';
   static const all = <String>{
     homePage,
     myCoursesPage,
     starredPage,
     offlinePage,
-    searchPage,
   };
 }
 
@@ -90,7 +105,6 @@ class MainScreenRouter extends RouterBase {
     RouteDef(MainScreenRoutes.myCoursesPage, page: MyCoursesPage),
     RouteDef(MainScreenRoutes.starredPage, page: StarredPage),
     RouteDef(MainScreenRoutes.offlinePage, page: OfflinePage),
-    RouteDef(MainScreenRoutes.searchPage, page: SearchPage),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -119,11 +133,17 @@ class MainScreenRouter extends RouterBase {
         settings: data,
       );
     },
-    SearchPage: (data) {
-      return MaterialPageRoute<void>(
-        builder: (context) => SearchPage(),
-        settings: data,
-      );
-    },
   };
+}
+
+/// ************************************************************************
+/// Arguments holder classes
+/// *************************************************************************
+
+/// CourseScreen arguments holder class
+class CourseScreenArguments {
+  final Key key;
+  final CourseEntity course;
+  final String courseId;
+  CourseScreenArguments({this.key, this.course, this.courseId});
 }

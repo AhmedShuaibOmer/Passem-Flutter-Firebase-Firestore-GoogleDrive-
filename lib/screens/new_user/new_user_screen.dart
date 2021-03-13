@@ -21,7 +21,7 @@ class NewUserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<NewUserCubit>(),
+      create: (_) => sl<NewUserBloc>(),
       child: NewUserView(),
     );
   }

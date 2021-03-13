@@ -23,12 +23,12 @@ export 'router.gr.dart';
     MaterialRoute<void>(page: SplashScreen),
     MaterialRoute<void>(page: LoginScreen),
     MaterialRoute<void>(page: NewUserScreen),
+    MaterialRoute<void>(page: CourseScreen),
     MaterialRoute<void>(page: MainScreen, children: [
       MaterialRoute<void>(page: HomePage),
       MaterialRoute<void>(page: MyCoursesPage),
       MaterialRoute<void>(page: StarredPage),
       MaterialRoute<void>(page: OfflinePage),
-      MaterialRoute<void>(page: SearchPage),
     ]),
   ],
 )

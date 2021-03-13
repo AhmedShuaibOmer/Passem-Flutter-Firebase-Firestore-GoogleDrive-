@@ -1,5 +1,5 @@
 /*
- * Created Date: 2/26/21 2:33 PM
+ * Created Date: 3/11/21 3:57 AM
  * Author: Ahmed S.Omer
  *
  * Copyright (c) 2021.  A.S.Omer
@@ -8,6 +8,10 @@
 
 part of 'starred_bloc.dart';
 
-abstract class StarredEvent extends Equatable {
-  const StarredEvent();
+abstract class StarredEvent {}
+
+class StudyMaterialIdsChanged extends StarredEvent {
+  final List<String> studyMaterialIds;
+
+  StudyMaterialIdsChanged(this.studyMaterialIds);
 }

@@ -13,20 +13,20 @@ class ProfileImage extends StatelessWidget {
   final String userPhotoUrl;
   final int scale;
 
-  const ProfileImage({Key key, @required this.userPhotoUrl, this.scale}) : super(key: key);
+  const ProfileImage({Key key, @required this.userPhotoUrl, this.scale})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    // TODO Add default  asset.
     return CachedNetworkImage(
-      imageUrl: userPhotoUrl.substring(
-          0, userPhotoUrl.length - 15) +
-          's${scale ?? 96}-c/photo.jpg',
-      progressIndicatorBuilder:
-          (context, url, downloadProgress) =>
-          CircularProgressIndicator(
-              value: downloadProgress.progress),
-      errorWidget: (context, url, error) =>
-          Icon(Icons.error),
+      imageUrl: userPhotoUrl == null
+          ? ''
+          : userPhotoUrl.substring(0, userPhotoUrl.length - 15) +
+              's${scale ?? 96}-c/photo.jpg',
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          CircularProgressIndicator(value: downloadProgress.progress),
+      errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }
-
 }
