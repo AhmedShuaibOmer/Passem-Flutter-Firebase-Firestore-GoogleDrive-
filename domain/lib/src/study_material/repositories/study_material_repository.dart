@@ -43,7 +43,6 @@ abstract class StudyMaterialRepository {
   Future<Either<Failure, void>> deleteMaterial(
     String materialId,
     String uploaderId,
-    bool ownedByMe,
   );
 
   Future<Either<Failure, void>> updateMaterial({
@@ -56,5 +55,8 @@ abstract class StudyMaterialRepository {
   Future<Either<Failure, List<StudyMaterialEntity>>> getDownloadedMaterials();
 
   Future<Either<Failure, bool>> addDownloadedMaterial(
+      StudyMaterialEntity materialEntity);
+
+  Future<Either<Failure, bool>> removeDownloadedMaterial(
       StudyMaterialEntity materialEntity);
 }

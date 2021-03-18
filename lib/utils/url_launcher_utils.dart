@@ -29,7 +29,6 @@ Future<void> launchInBrowser(BuildContext context, String url) async {
       url,
       forceSafariVC: false,
       forceWebView: false,
-      headers: <String, String>{'my_header_key': 'my_header_value'},
     );
   } else {
     UnsupportedOperationAlert(context).show(context);

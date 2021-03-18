@@ -43,10 +43,11 @@ dependencies:
   responsive_framework: ^0.0.14
   url_launcher: ^6.0.2
   native_pdf_view: ^4.0.1
-  firebase_dynamic_links: ^0.8.0
   http: ^0.13.0
-  downloads_path_provider_28: ^0.1.0
+  path_provider: ^2.0.1
   path: ^1.7.0
+  share: ^2.0.1
+  device_info: 2.0.0
 
 dev_dependencies:
   flutter_test:

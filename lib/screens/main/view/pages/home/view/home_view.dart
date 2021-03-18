@@ -9,7 +9,9 @@
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:passem/screens/main/view/pages/home/view/search_results_view.dart';
 
 import '../../../../../../generated/l10n.dart';
 import '../../../../../../widgets/widget.dart';
@@ -27,8 +29,6 @@ class _HomeViewState extends State<HomeView>
   ScrollController _nestedScrollViewController;
   bool isSearchMode = false;
   bool canExpandHeader = true;
-
-  List<ResourceTabItem> courseTabs = [];
 
   final FocusNode _searchFocusNode = FocusNode();
 
@@ -84,47 +84,37 @@ class _HomeViewState extends State<HomeView>
 
   @override
   Widget build(BuildContext context) {
-    courseTabs = getCourseTabs(context);
-    courseTabs.insert(
-      0,
-      ResourceTabItem(S.of(context).courses, null),
-    );
-    return DefaultTabController(
-      length: courseTabs.length,
-      child: SafeArea(
-        child: NestedScrollView(
-          controller: _nestedScrollViewController,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            // These are the slivers that show up in the "outer" scroll view.
-            return <Widget>[
-              SliverOverlapAbsorber(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverAppBar(
-                  leading: _buildMenuCloseButton(),
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  flexibleSpace: LayoutBuilder(
-                    builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      return _header(constraints.biggest.height);
-                    },
-                  ),
-                  pinned: true,
-                  collapsedHeight: 132,
-                  expandedHeight: canExpandHeader ? 300 : 132,
-                  forceElevated: innerBoxIsScrolled,
-                  //bottom: _tabBar(),
+    return SafeArea(
+      child: NestedScrollView(
+        controller: _nestedScrollViewController,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          // These are the slivers that show up in the "outer" scroll view.
+          return <Widget>[
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar(
+                leading: _buildMenuCloseButton(),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                flexibleSpace: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return _header(constraints.biggest.height);
+                  },
                 ),
+                pinned: true,
+                collapsedHeight: canExpandHeader ? 132 : 72,
+                expandedHeight: canExpandHeader ? 300 : 72,
+                forceElevated: innerBoxIsScrolled,
+                //bottom: _tabBar(),
               ),
-            ];
-          },
-          body: IndexedStack(
-            index: isSearchMode ? 1 : 0,
-            children: [
-              _homeBody(),
-              _searchModeBody(),
-            ],
-          ),
+            ),
+          ];
+        },
+        body: IndexedStack(
+          index: isSearchMode ? 1 : 0,
+          children: [
+            _homeBody(),
+            _searchModeBody(),
+          ],
         ),
       ),
     );
@@ -165,18 +155,6 @@ class _HomeViewState extends State<HomeView>
     return Stack(
       alignment: Alignment.center,
       children: [
-        AnimatedPositioned(
-          bottom: isSearchMode ? 0 : null,
-          top: isSearchMode ? null : -80,
-          right: 0,
-          left: 0,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.fastLinearToSlowEaseIn,
-          child: roundedIndicatorTabBar(
-            context: context,
-            tabs: courseTabs.map((tab) => Tab(text: tab.name)).toList(),
-          ),
-        ),
         Positioned.directional(
           textDirection: Directionality.of(context),
           end: 8,
@@ -242,9 +220,8 @@ class _HomeViewState extends State<HomeView>
 
   Widget _searchModeBody() {
     return Padding(
-      padding: const EdgeInsets.only(top: 132),
-      child: ResourcesTabBarView(
-        courseTabs: courseTabs,
+      padding: const EdgeInsets.only(top: 80),
+      child: SearchResultsView(
         searchTextController: _searchTextController,
       ),
     );
@@ -341,7 +318,10 @@ class _HomeViewState extends State<HomeView>
   Widget _buildMostContributorsList() {
     return Container(
       alignment: Alignment.center,
-      height: 200,
+      constraints: BoxConstraints(
+        minHeight: 50,
+        maxHeight: 300,
+      ),
       child: BlocBuilder<MostContributorsCubit, BaseListState>(
         builder: (context, state) {
           switch (state.status) {
@@ -394,12 +374,13 @@ class _HomeViewState extends State<HomeView>
                               child: Text(
                                 userEntity.name,
                                 maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.w800),
                               ),
                             ),
                             Text(
-                              'Shares Count : ${userEntity.sharedMaterialsCount}',
+                              '${S.of(context).shares_count} : ${userEntity.sharedMaterialsCount}',
                               style: TextStyle(fontWeight: FontWeight.w400),
                             ),
                           ],

@@ -98,6 +98,7 @@ class DownloadButton extends StatelessWidget {
         curve: Curves.ease,
         child: Icon(
           icon,
+          size: 24.0,
           color: _isDownloaded ? Colors.blue : null,
         ),
       ),

@@ -6,19 +6,67 @@
  *
  */
 
+import 'package:data/data.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:passem/di/di.dart';
-import 'package:passem/generated/l10n.dart';
-import 'package:passem/router/router.gr.dart';
-import 'package:passem/screens/main/view/main_content.dart';
+import 'package:passem/current_version.dart';
+import 'package:passem/screens/main/view/dialogs/dialogs.dart';
+import 'package:passem/utils/utils.dart';
 
+import '../../di/di.dart';
+import '../../dynamic_links_handler.dart';
+import '../../generated/l10n.dart';
+import '../../router/router.gr.dart';
+import '../../screens/main/view/main_content.dart';
 import 'bloc/navigation_bloc.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  @override
+  void initState() {
+    super.initState();
+    sl<FirestoreService>().getLatestVersionData().then((value) {
+      try {
+        final double version = value['version'];
+        if (version > PASSEM_CURRENT_VERSION) {
+          showPrimaryDialog(
+            context: context,
+            dialogBuilder: (ctx) {
+              return AlertDialog(
+                title: Text(S.of(context).new_version_available),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(S.of(context).update),
+                    onPressed: () async {
+                      await launchInBrowser(
+                          ctx, value['downloadUrl'] as String);
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(S.of(context).not_now),
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } catch (e) {
+        print(e);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final tabs = <NavigationTab>[
@@ -52,19 +100,21 @@ class MainScreen extends StatelessWidget {
         systemNavigationBarIconBrightness:
             Brightness.dark, //navigation bar icons' color
       ),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => sl<NavigationBloc>()..setTabs(tabs),
-          ),
-          BlocProvider(
-            create: (_) => sl<RecentlyAddedCubit>(),
-          ),
-          BlocProvider(
-            create: (_) => sl<MostContributorsCubit>(),
-          ),
-        ],
-        child: MainContent(),
+      child: DynamicLinksHandler(
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => sl<NavigationBloc>()..setTabs(tabs),
+            ),
+            BlocProvider(
+              create: (_) => sl<RecentlyAddedCubit>(),
+            ),
+            BlocProvider(
+              create: (_) => sl<MostContributorsCubit>(),
+            ),
+          ],
+          child: MainContent(),
+        ),
       ),
     );
   }

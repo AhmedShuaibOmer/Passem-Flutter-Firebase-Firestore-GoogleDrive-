@@ -17,12 +17,14 @@ class Routes {
   static const String loginScreen = '/login-screen';
   static const String newUserScreen = '/new-user-screen';
   static const String courseScreen = '/course-screen';
+  static const String pdfViewerScreen = '/pdf-viewer-screen';
   static const String mainScreen = '/main-screen';
   static const all = <String>{
     splashScreen,
     loginScreen,
     newUserScreen,
     courseScreen,
+    pdfViewerScreen,
     mainScreen,
   };
 }
@@ -35,6 +37,7 @@ class AppRouter extends RouterBase {
     RouteDef(Routes.loginScreen, page: LoginScreen),
     RouteDef(Routes.newUserScreen, page: NewUserScreen),
     RouteDef(Routes.courseScreen, page: CourseScreen),
+    RouteDef(Routes.pdfViewerScreen, page: PdfViewerScreen),
     RouteDef(
       Routes.mainScreen,
       page: MainScreen,
@@ -71,6 +74,17 @@ class AppRouter extends RouterBase {
           key: args.key,
           course: args.course,
           courseId: args.courseId,
+        ),
+        settings: data,
+      );
+    },
+    PdfViewerScreen: (data) {
+      final args = data.getArgs<PdfViewerScreenArguments>(nullOk: false);
+      return MaterialPageRoute<void>(
+        builder: (context) => PdfViewerScreen(
+          key: args.key,
+          filepath: args.filepath,
+          fileName: args.fileName,
         ),
         settings: data,
       );
@@ -146,4 +160,13 @@ class CourseScreenArguments {
   final CourseEntity course;
   final String courseId;
   CourseScreenArguments({this.key, this.course, this.courseId});
+}
+
+/// PdfViewerScreen arguments holder class
+class PdfViewerScreenArguments {
+  final Key key;
+  final String filepath;
+  final String fileName;
+  PdfViewerScreenArguments(
+      {this.key, @required this.filepath, @required this.fileName});
 }

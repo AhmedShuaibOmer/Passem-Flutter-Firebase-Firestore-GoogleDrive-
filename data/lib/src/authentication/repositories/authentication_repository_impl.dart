@@ -48,11 +48,12 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository {
       final isNewUser = await _firebaseAuthService.logInWithGoogle();
       if (isNewUser) {
         final newUser = User(
-          id: _firebaseAuthService.currentUser.id,
-          name: _firebaseAuthService.currentUser.name,
-          email: _firebaseAuthService.currentUser.email,
-          photoUrl: _firebaseAuthService.currentUser.photoUrl,
-        );
+            id: _firebaseAuthService.currentUser.id,
+            name: _firebaseAuthService.currentUser.name,
+            email: _firebaseAuthService.currentUser.email,
+            photoUrl: _firebaseAuthService.currentUser.photoUrl,
+            universityId: 'wpn9pji2pF2YNLUMBFE0',
+            collegeId: 'gsOREW8tgC0zjDbbjn3x');
         await _firestoreService.addNewUser(newUser);
       } else {
         await _firestoreService.getUser();

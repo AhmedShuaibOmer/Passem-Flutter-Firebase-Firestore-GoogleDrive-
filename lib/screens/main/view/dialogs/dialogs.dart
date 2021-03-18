@@ -10,8 +10,12 @@ import 'package:flutter/material.dart';
 
 export 'add_course.dart';
 export 'add_materials.dart';
+export 'important_action_dialog.dart';
 
-Future<T> showPrimaryDialog<T>({BuildContext context, Widget dialog}) {
+Future<T> showPrimaryDialog<T>(
+    {BuildContext context,
+    Widget dialog,
+    Widget Function(BuildContext) dialogBuilder}) {
   return showGeneralDialog<T>(
     context: context,
     barrierColor: Theme.of(context).primaryColor.withOpacity(0.6),
@@ -22,9 +26,9 @@ Future<T> showPrimaryDialog<T>({BuildContext context, Widget dialog}) {
     // label for barrier
     transitionDuration: Duration(milliseconds: 400),
     // how long it takes to popup dialog after button click
-    pageBuilder: (_, __, ___) {
+    pageBuilder: (context, __, ___) {
       // your widget implementation
-      return dialog;
+      return dialog != null ? dialog : dialogBuilder(context);
     },
   );
 }

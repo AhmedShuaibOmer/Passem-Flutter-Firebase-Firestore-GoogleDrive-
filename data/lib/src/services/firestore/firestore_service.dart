@@ -9,6 +9,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:data/src/services/services.dart';
 import 'package:data/src/study_material/models/study_material_model.dart';
 import 'package:domain/domain.dart';
 
@@ -245,14 +246,21 @@ class FirestoreService {
     String courseName,
   }) async {
     List<String> searchKeywords = await _generateSearchKeywords(courseName);
+
     String courseId;
     await _coursesCollection.add(
       {
         "name": courseName,
         "searchKeywords": searchKeywords,
       },
-    ).then((courseRef) {
+    ).then((courseRef) async {
       courseId = courseRef.id;
+      final dynamicLinksService = DynamicLinkService();
+      String deepLinK =
+          await dynamicLinksService.createCourseDynamicLink(courseId);
+      await _coursesCollection
+          .doc(courseId)
+          .set({"deepLink": deepLinK}, SetOptions(merge: true));
     });
     return courseId;
   }
@@ -516,10 +524,12 @@ class FirestoreService {
     if (materialsIds == null || materialsIds.isEmpty) return null;
     for (var element in materialsIds) {
       await _studyMaterialsCollection.doc(element).get().then((value) {
-        print('study materials fetched from firestore ${value.toJson}');
-        materials.add(
-          StudyMaterial.fromJson(value.toJson),
-        );
+        if (value.exists) {
+          print('study materials fetched from firestore ${value.toJson}');
+          materials.add(
+            StudyMaterial.fromJson(value.toJson),
+          );
+        }
       });
     }
     return materials;
@@ -544,26 +554,24 @@ class FirestoreService {
   // **************************************************************************
 
   // **************************************************************************
-  // Google Drive related: BEGIN
+  // Version related: BEGIN
   // **************************************************************************
 
-  Future<void> writeUserBaseFolderID(String id) async {
-    await _usersCollection
-        .doc(
-      _firebaseAuthService.currentUserId,
-    )
-        .set(
-      {"baseAppFolderId": id},
-      SetOptions(merge: true),
-    ).then((value) => getUser());
-  }
+  CollectionReference _versionCollection =
+      FirebaseFirestore.instance.collection(versionPath);
 
-  String get userBaseFolderID {
-    return currentUser.baseAppFolderId;
+  Future<Map<String, dynamic>> getLatestVersionData() async {
+    print('fetching from firestore....');
+
+    final DocumentSnapshot versionDoc =
+        await _versionCollection.doc('latest_version').get();
+    print('Version document fetched from firestore');
+    final version = versionDoc.data();
+    return version;
   }
 
   // **************************************************************************
-  // Google Drive related: END
+  // Version related: END
   // **************************************************************************
 
   void dispose() {

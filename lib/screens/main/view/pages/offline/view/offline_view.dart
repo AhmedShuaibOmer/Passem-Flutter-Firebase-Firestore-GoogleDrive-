@@ -74,7 +74,31 @@ class OfflineView extends StatelessWidget {
                   },
                 );
               case BaseListStatus.empty:
-                return Container();
+                return Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          S.of(context).didnt_download_files,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Flexible(
+                        child: Text(
+                          S.of(context).all_files_downloaded,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               default:
                 return Container();
             }

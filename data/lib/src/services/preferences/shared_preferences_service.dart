@@ -58,6 +58,30 @@ class SharedPreferencesService {
     );
   }
 
+  Future<bool> removeDownloadedMaterial(
+      StudyMaterialEntity studyMaterial) async {
+    List<String> materials = _preferences.getStringList(
+      SharedPrefKeys.DOWNLOADED_MATERIALS,
+    );
+    String material = jsonEncode(StudyMaterial.jsonFrom(studyMaterial)
+      ..addAll({"id": studyMaterial.id}));
+    bool success = false;
+    if (materials != null) {
+      success = materials.remove(material);
+    } else {
+      return false;
+    }
+
+    if (success) {
+      return _preferences.setStringList(
+        SharedPrefKeys.DOWNLOADED_MATERIALS,
+        materials,
+      );
+    } else {
+      return false;
+    }
+  }
+
   List<StudyMaterial> get downloadedMaterials {
     List<StudyMaterial> materials = [];
     List<String> jsonMaterials =

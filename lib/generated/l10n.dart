@@ -245,10 +245,10 @@ class S {
     );
   }
 
-  /// `Offline`
+  /// `Downloads`
   String get offline {
     return Intl.message(
-      'Offline',
+      'Downloads',
       name: 'offline',
       desc: '',
       args: [],
@@ -555,10 +555,10 @@ class S {
     );
   }
 
-  /// `No results were found matching your search`
+  /// `No results were found`
   String get no_results_found {
     return Intl.message(
-      'No results were found matching your search',
+      'No results were found',
       name: 'no_results_found',
       desc: '',
       args: [],
@@ -650,6 +650,356 @@ class S {
     return Intl.message(
       'Added Successfully',
       name: 'added_successfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open with`
+  String get open_with {
+    return Intl.message(
+      'Open with',
+      name: 'open_with',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permanently Delete from Database`
+  String get delete_forever {
+    return Intl.message(
+      'Permanently Delete from Database',
+      name: 'delete_forever',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This item well be permanently deleted from our database, this action is irreversible.`
+  String get delete_forever_content {
+    return Intl.message(
+      'This item well be permanently deleted from our database, this action is irreversible.',
+      name: 'delete_forever_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure?`
+  String get are_you_sure {
+    return Intl.message(
+      'Are you sure?',
+      name: 'are_you_sure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The downloaded content of this item well be deleted from your local storage.`
+  String get delete_from_device_content {
+    return Intl.message(
+      'The downloaded content of this item well be deleted from your local storage.',
+      name: 'delete_from_device_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete from this device`
+  String get delete_from_device {
+    return Intl.message(
+      'Delete from this device',
+      name: 'delete_from_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Navigate to full course`
+  String get navigate_to_full_course {
+    return Intl.message(
+      'Navigate to full course',
+      name: 'navigate_to_full_course',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get share {
+    return Intl.message(
+      'Share',
+      name: 'share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No courses found`
+  String get no_courses_found {
+    return Intl.message(
+      'No courses found',
+      name: 'no_courses_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How to add your courses here`
+  String get how_to_add_courses {
+    return Intl.message(
+      'How to add your courses here',
+      name: 'how_to_add_courses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `  1- From the home page, search for the course you want.`
+  String get how_to_add_courses_1 {
+    return Intl.message(
+      '  1- From the home page, search for the course you want.',
+      name: 'how_to_add_courses_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `  2- If the course exists, click 'Add to my courses' button.`
+  String get how_to_add_courses_2 {
+    return Intl.message(
+      '  2- If the course exists, click \'Add to my courses\' button.',
+      name: 'how_to_add_courses_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You didn't download any files`
+  String get didnt_download_files {
+    return Intl.message(
+      'You didn\'t download any files',
+      name: 'didnt_download_files',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All files you download well be available here`
+  String get all_files_downloaded {
+    return Intl.message(
+      'All files you download well be available here',
+      name: 'all_files_downloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have no starred items yet`
+  String get no_starred_items {
+    return Intl.message(
+      'You have no starred items yet',
+      name: 'no_starred_items',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start adding important items here by clicking the 'Star' button on the item.`
+  String get add_starred_items {
+    return Intl.message(
+      'Start adding important items here by clicking the \'Star\' button on the item.',
+      name: 'add_starred_items',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact us`
+  String get contact_us {
+    return Intl.message(
+      'Contact us',
+      name: 'contact_us',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite a friend`
+  String get invite_a_friend {
+    return Intl.message(
+      'Invite a friend',
+      name: 'invite_a_friend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Study anytime,anywhere and ace your exams`
+  String get intro {
+    return Intl.message(
+      'Study anytime,anywhere and ace your exams',
+      name: 'intro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The best documents and study materials shared by your colleagues, organized in one place.`
+  String get intro_2 {
+    return Intl.message(
+      'The best documents and study materials shared by your colleagues, organized in one place.',
+      name: 'intro_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to add course to your courses, try again.`
+  String get adding_to_my_courses_failure {
+    return Intl.message(
+      'Failed to add course to your courses, try again.',
+      name: 'adding_to_my_courses_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to remove course from your courses, try again.`
+  String get removing_from_my_courses_failure {
+    return Intl.message(
+      'Failed to remove course from your courses, try again.',
+      name: 'removing_from_my_courses_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successfully added to your courses.`
+  String get adding_to_my_courses_success {
+    return Intl.message(
+      'Successfully added to your courses.',
+      name: 'adding_to_my_courses_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successfully removed from your courses.`
+  String get removing_from_my_courses_success {
+    return Intl.message(
+      'Successfully removed from your courses.',
+      name: 'removing_from_my_courses_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get yes {
+    return Intl.message(
+      'Yes',
+      name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to delete item.`
+  String get item_delete_failure {
+    return Intl.message(
+      'Failed to delete item.',
+      name: 'item_delete_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successfully deleted item.`
+  String get item_delete_success {
+    return Intl.message(
+      'Successfully deleted item.',
+      name: 'item_delete_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File download failed, try again later.`
+  String get download_failed {
+    return Intl.message(
+      'File download failed, try again later.',
+      name: 'download_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File not found`
+  String get file_not_found {
+    return Intl.message(
+      'File not found',
+      name: 'file_not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New version available!`
+  String get new_version_available {
+    return Intl.message(
+      'New version available!',
+      name: 'new_version_available',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get update {
+    return Intl.message(
+      'Update',
+      name: 'update',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not now`
+  String get not_now {
+    return Intl.message(
+      'Not now',
+      name: 'not_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shares Count`
+  String get shares_count {
+    return Intl.message(
+      'Shares Count',
+      name: 'shares_count',
       desc: '',
       args: [],
     );

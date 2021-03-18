@@ -148,7 +148,6 @@ class StudyMaterial extends StudyMaterialEntity {
         uploaderId: uploaderId ?? this.uploaderId,
       );
 
-
   factory StudyMaterial.fromJson(Map<String, dynamic> json) =>
       _$StudyMaterialFromJson(json);
 

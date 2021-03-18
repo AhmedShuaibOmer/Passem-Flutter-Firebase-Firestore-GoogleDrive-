@@ -63,7 +63,6 @@ class AppView extends StatelessWidget {
       supportedLocales: S.delegate.supportedLocales,
       builder: (context, widget) => ResponsiveWrapper.builder(
           ExtendedNavigator<AppRouter>(
-            //navigatorKey: _navigatorKey,
             router: AppRouter(),
             initialRoute: Routes.splashScreen,
           ),

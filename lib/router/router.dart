@@ -24,6 +24,7 @@ export 'router.gr.dart';
     MaterialRoute<void>(page: LoginScreen),
     MaterialRoute<void>(page: NewUserScreen),
     MaterialRoute<void>(page: CourseScreen),
+    MaterialRoute<void>(page: PdfViewerScreen),
     MaterialRoute<void>(page: MainScreen, children: [
       MaterialRoute<void>(page: HomePage),
       MaterialRoute<void>(page: MyCoursesPage),

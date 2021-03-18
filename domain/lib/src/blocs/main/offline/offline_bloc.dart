@@ -54,4 +54,20 @@ class OfflineBloc
       });
     });
   }
+
+  Future<void> removeDownloadedMaterial(
+      StudyMaterialEntity materialEntity) async {
+    await studyMaterialRepository
+        .removeDownloadedMaterial(materialEntity)
+        .then((value) {
+      value.fold((l) {
+        // TODO : Handle error case.
+      }, (r) {
+        if (r) {
+          add(OfflineMaterialsChanged());
+        }
+      });
+      add(OfflineMaterialsChanged());
+    });
+  }
 }

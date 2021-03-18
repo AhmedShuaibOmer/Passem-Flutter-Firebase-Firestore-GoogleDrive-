@@ -94,7 +94,8 @@ Future<void> initDI() async {
   sl.registerLazySingleton<StudyMaterialRepository>(
     () => StudyMaterialRepositoryImpl(
       firestoreService: sl(),
-      networkInfo: sl(), sharedPreferencesService: sl(),
+      networkInfo: sl(),
+      sharedPreferencesService: sl(),
     ),
   );
 

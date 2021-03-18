@@ -32,7 +32,7 @@ class MyCoursesBloc extends Bloc<MyCoursesEvent, BaseListState<CourseEntity>> {
         yield BaseListState.loaded(status: BaseListStatus.empty);
       }, (r) async* {
         if (r == null || r.isEmpty) {
-          print('courses yielded empty data ${r.length}');
+          print('courses yielded empty data');
           yield BaseListState.loaded(status: BaseListStatus.empty);
         } else {
           print('courses yielded has data ${r.length}');

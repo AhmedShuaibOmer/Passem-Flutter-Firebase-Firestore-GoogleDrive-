@@ -8,5 +8,6 @@
 
 export 'alerts.dart';
 export 'dropdown_search.dart';
+export 'load_failed.dart';
 export 'profile_Image.dart';
 export 'progress_button.dart';

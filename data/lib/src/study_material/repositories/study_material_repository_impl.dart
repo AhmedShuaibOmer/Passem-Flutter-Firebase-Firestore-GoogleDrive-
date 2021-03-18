@@ -62,18 +62,13 @@ class StudyMaterialRepositoryImpl extends StudyMaterialRepository {
   Future<Either<Failure, void>> deleteMaterial(
     String materialId,
     String uploaderId,
-    bool ownedByMe,
   ) async {
-    if (await _networkInfo.isConnected) {
-      try {
-        await _firestoreService.deleteStudyMaterial(
-            materialId: materialId, uploaderId: uploaderId);
-        return Right(() {});
-      } catch (e) {
-        return Left(DeleteMaterialFailure());
-      }
-    } else {
-      return Left(NoConnectionFailure());
+    try {
+      await _firestoreService.deleteStudyMaterial(
+          materialId: materialId, uploaderId: uploaderId);
+      return Right(() {});
+    } catch (e) {
+      return Left(DeleteMaterialFailure());
     }
   }
 
@@ -180,7 +175,20 @@ class StudyMaterialRepositoryImpl extends StudyMaterialRepository {
       return Right(result);
     } catch (e) {
       print(e);
-      return Left(StudyMaterialsFetchingFailure());
+      return Left(StudyMaterialsCachingFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> removeDownloadedMaterial(
+      StudyMaterialEntity materialEntity) async {
+    try {
+      bool result =
+          await _preferencesService.removeDownloadedMaterial(materialEntity);
+      return Right(result);
+    } catch (e) {
+      print(e);
+      return Left(StudyMaterialsUnCachingFailure());
     }
   }
 }

@@ -17,10 +17,8 @@ class Course extends CourseEntity {
   Course({
     @required this.id,
     @required String name,
-  }) : super(
-          id: id,
-          name: name,
-        );
+    @required String deepLink,
+  }) : super(id: id, name: name, deepLink: deepLink);
 
   /// The current course's id.
   ///
@@ -38,10 +36,12 @@ class Course extends CourseEntity {
   Course copyWith({
     String id,
     String name,
+    String deepLink,
   }) =>
       Course(
         id: id ?? this.id,
         name: name ?? this.name,
+        deepLink: deepLink ?? this.deepLink,
       );
 
   factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);

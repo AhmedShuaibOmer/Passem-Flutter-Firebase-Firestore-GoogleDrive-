@@ -11,6 +11,7 @@ import 'package:domain/domain.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:passem/widgets/alerts.dart';
 
 import '../../../../di/di.dart';
 import '../../../../generated/l10n.dart';
@@ -36,12 +37,11 @@ TextButton courseListItem(
         maxWidth: 500,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             margin: EdgeInsets.all(8),
+            alignment: Alignment.center,
             constraints: BoxConstraints(maxWidth: 56, maxHeight: 56),
             child: AspectRatio(
               aspectRatio: 1,
@@ -58,9 +58,13 @@ TextButton courseListItem(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    courseEntity.name,
-                    style: Theme.of(context).textTheme.headline6,
+                  Flexible(
+                    child: Text(
+                      courseEntity.name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
                   ),
                   Container(
                     alignment: AlignmentDirectional.centerEnd,
@@ -70,16 +74,53 @@ TextButton courseListItem(
                               (AuthenticationBloc ab) => ab.state.user.courses)
                           .contains(courseEntity.id);
                       return TextButton.icon(
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                        ),
                         label: Text(isSubscribed
                             ? S.of(context).remove_from_my_courses
                             : S.of(context).add_to_my_courses),
                         onPressed: () {
                           if (isSubscribed) {
                             sl<UserRepository>()
-                                .unsubscribeFromCourse(courseEntity.id);
+                                .unsubscribeFromCourse(courseEntity.id)
+                                .then((value) {
+                              value.fold((l) {
+                                OperationFailedAlert(context,
+                                        message: S
+                                            .of(context)
+                                            .removing_from_my_courses_failure)
+                                    .show(context);
+                              }, (r) {
+                                OperationSuccessAlert(
+                                        message: S
+                                            .of(context)
+                                            .removing_from_my_courses_success)
+                                    .show(context);
+                              });
+                            });
                           } else {
                             sl<UserRepository>()
-                                .subscribeToCourse(courseEntity.id);
+                                .subscribeToCourse(courseEntity.id)
+                                .then((value) {
+                              value.fold((l) {
+                                OperationFailedAlert(context,
+                                        message: S
+                                            .of(context)
+                                            .adding_to_my_courses_failure)
+                                    .show(context);
+                              }, (r) {
+                                OperationSuccessAlert(
+                                        message: S
+                                            .of(context)
+                                            .adding_to_my_courses_success)
+                                    .show(context);
+                              });
+                            });
                           }
                         },
                         icon: Icon(

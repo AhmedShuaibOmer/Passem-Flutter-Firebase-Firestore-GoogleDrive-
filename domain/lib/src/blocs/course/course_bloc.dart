@@ -18,6 +18,9 @@ part 'course_state.dart';
 class CourseBloc extends Bloc<CourseEvent, CourseState> {
   final CourseRepository _courseRepository;
 
+  CourseEntity _courseEntity;
+  String _courseId;
+
   CourseBloc(
       {@required CourseRepository courseRepository,
       @required String courseId,
@@ -34,10 +37,26 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
   ) async* {
     if (event is CourseStarted) {
       if (event.courseEntity != null) {
-        yield CourseLoaded(event.courseEntity);
+        _courseEntity = event.courseEntity;
+        yield CourseLoaded(_courseEntity);
       } else {
-        final courseEntity =
-            await _courseRepository.getCourses([event.courseId]);
+        _courseId = event.courseId;
+        final courseEntity = await _courseRepository.getCourses([_courseId]);
+        yield* courseEntity.fold((l) async* {
+          yield CourseFetchFailure();
+        }, (r) async* {
+          if (r.isEmpty) {
+            yield CourseNotFound();
+          } else {
+            yield CourseLoaded(r[0]);
+          }
+        });
+      }
+    } else if (event is CourseRefreshRequested) {
+      if (_courseEntity != null) {
+        yield CourseLoaded(_courseEntity);
+      } else {
+        final courseEntity = await _courseRepository.getCourses([_courseId]);
         yield* courseEntity.fold((l) async* {
           yield CourseFetchFailure();
         }, (r) async* {

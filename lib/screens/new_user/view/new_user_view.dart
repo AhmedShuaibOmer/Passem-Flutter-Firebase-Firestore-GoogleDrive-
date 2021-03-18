@@ -27,83 +27,45 @@ class NewUserView extends StatelessWidget {
     // ignore: close_sinks
     final newUserBloc = BlocProvider.of<NewUserBloc>(context);
     final height = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        body: BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-            if (state.status == AuthenticationStatus.authenticated) {
-              ExtendedNavigator.of(context).pushAndRemoveUntil(
-                Routes.mainScreen,
-                (route) => false,
-              );
-            }
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state.status == AuthenticationStatus.authenticated) {
+            ExtendedNavigator.of(context).pushAndRemoveUntil(
+              Routes.mainScreen,
+              (route) => false,
+            );
+          }
+        },
+        child: FormBlocListener<NewUserBloc, String, String>(
+          onSubmitting: (context, state) {
+            _progressButtonController
+                .setButtonState(ProgressButtonState.inProgress);
           },
-          child: FormBlocListener<NewUserBloc, String, String>(
-            onSubmitting: (context, state) {
-              _progressButtonController
-                  .setButtonState(ProgressButtonState.inProgress);
+          onFailure: (context, state) {
+            _progressButtonController.setButtonState(ProgressButtonState.error);
+            OperationFailedAlert(
+              context,
+              message: S.of(context).new_user_setup_failure,
+            ).show(context);
+          },
+          child: BlocBuilder<NewUserBloc, FormBlocState>(
+            buildWhen: (previous, current) =>
+                previous.runtimeType != current.runtimeType ||
+                previous is FormBlocLoading && current is FormBlocLoading,
+            builder: (context, state) {
+              if (state is FormBlocLoading) {
+                return Scaffold(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    body: Center(child: CircularProgressIndicator()));
+              } else if (state is FormBlocLoadFailed) {
+                return LoadFailed(
+                  onTryAgain: () => newUserBloc.reload(),
+                );
+              } else
+                return buildLoadedView(height, newUserBloc, context);
             },
-            onFailure: (context, state) {
-              _progressButtonController
-                  .setButtonState(ProgressButtonState.error);
-              OperationFailedAlert(
-                context,
-                message: S.of(context).new_user_setup_failure,
-              ).show(context);
-            },
-            child: BlocBuilder<NewUserBloc, FormBlocState>(
-              buildWhen: (previous, current) =>
-                  previous.runtimeType != current.runtimeType ||
-                  previous is FormBlocLoading && current is FormBlocLoading,
-              builder: (cnotext, state) {
-                if (state is FormBlocLoading) {
-                  return Container(
-                    child: SizedBox(
-                      height: 32,
-                      width: 32,
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else if (state is FormBlocLoadFailed) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          S.of(context).something_went_wrong,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3
-                              .copyWith(color: Colors.white),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextButton.icon(
-                            onPressed: () async {
-                              final NetworkInfo networkInfo = sl<NetworkInfo>();
-                              if (await networkInfo.isConnected) {
-                                newUserBloc.reload();
-                              } else {
-                                NoConnectionAlert(
-                                  context,
-                                  specificMessage: S
-                                      .of(context)
-                                      .new_user_no_internet_failure,
-                                ).show(context);
-                              }
-                            },
-                            icon: Icon(Icons.refresh),
-                            label: Text(S.of(context).try_again)),
-                      ],
-                    ),
-                  );
-                } else
-                  return buildLoadedView(height, newUserBloc, context);
-              },
-            ),
           ),
         ),
       ),

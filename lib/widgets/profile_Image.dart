@@ -18,15 +18,22 @@ class ProfileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO Add default  asset.
     return CachedNetworkImage(
       imageUrl: userPhotoUrl == null
           ? ''
           : userPhotoUrl.substring(0, userPhotoUrl.length - 15) +
               's${scale ?? 96}-c/photo.jpg',
-      progressIndicatorBuilder: (context, url, downloadProgress) =>
-          CircularProgressIndicator(value: downloadProgress.progress),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+      placeholder: (ctx, str) => Container(
+        alignment: Alignment.center,
+        color: Theme.of(context).primaryColor,
+        child: LayoutBuilder(
+          builder: (ctx, constraints) => Icon(
+            Icons.person_outline_rounded,
+            color: Colors.white,
+            size: constraints.biggest.height / 2,
+          ),
+        ),
+      ),
     );
   }
 }

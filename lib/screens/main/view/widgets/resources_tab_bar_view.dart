@@ -6,20 +6,16 @@
  *
  */
 
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data/data.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 
 import '../../../../di/di.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../utils/utils.dart';
-import '../../../../widgets/widget.dart';
-import '../dialogs/dialogs.dart';
-import 'list_items.dart';
 import 'study_material_list_item.dart';
 
 List<ResourceTabItem> getCourseTabs(BuildContext context) => [
@@ -101,10 +97,6 @@ class _ResourcesTabBarViewState extends State<ResourcesTabBarView> {
             itemBuilder: (index, context, documentSnapshot) {
               print('Resources tabBar view build: courses index $index');
               print(documentSnapshot.toJson);
-              if (tab.materialType == null) {
-                CourseEntity course = Course.fromJson(documentSnapshot.toJson);
-                return courseListItem(course, context);
-              }
               StudyMaterial studyMaterial =
                   StudyMaterial.fromJson(documentSnapshot.toJson);
               return StudyMaterialListItem(
@@ -114,42 +106,7 @@ class _ResourcesTabBarViewState extends State<ResourcesTabBarView> {
             query: widget.searchTextController != null
                 ? null
                 : _getQuery(tab, widget.courseId, widget.queryText),
-            emptyDisplay: tab.materialType == null
-                ? Container(
-                    alignment: Alignment.center,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        SizedBox(
-                          height: 50,
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: Text(S.of(context).no_courses_were_found),
-                        ),
-                        SizedBox(height: 32),
-                        TextButton.icon(
-                          onPressed: () async {
-                            final courseId = await showPrimaryDialog<String>(
-                              context: context,
-                              dialog: AddCourse(),
-                            );
-                            if (courseId != null && courseId.isNotEmpty) {
-                              OperationSuccessAlert(
-                                message: S.of(context).added_successfully,
-                              ).show(context);
-                            }
-                          },
-                          icon: Icon(Icons.add),
-                          label: Text(S.of(context).try_adding_course),
-                        )
-                      ],
-                    ),
-                  )
-                : Container(
-                    alignment: Alignment.center,
-                    child: Text(S.of(context).no_results_found),
-                  ),
+            emptyDisplay: _buildEmptyDisplay(),
             listeners: _getListeners(),
           ),
         );
@@ -163,12 +120,10 @@ class _ResourcesTabBarViewState extends State<ResourcesTabBarView> {
     String queryText,
   ) {
     if (courseId == null) {
-      return tab.materialType == null
-          ? sl<FirestoreService>().searchCourses(queryText)
-          : sl<FirestoreService>().searchMaterials(
-              query: queryText,
-              materialType: tab.materialType,
-            );
+      return sl<FirestoreService>().searchMaterials(
+        query: queryText,
+        materialType: tab.materialType,
+      );
     } else {
       return sl<FirestoreService>().materialsForCourse(
           courseId: courseId, materialType: tab.materialType);
@@ -189,6 +144,13 @@ class _ResourcesTabBarViewState extends State<ResourcesTabBarView> {
     }
     return null;
   }
+
+  Widget _buildEmptyDisplay() {
+    return Container(
+      alignment: Alignment.center,
+      child: Text(S.of(context).no_results_found),
+    );
+  }
 }
 
 class ResourceTabItem {
@@ -196,16 +158,4 @@ class ResourceTabItem {
   final StudyMaterialType materialType;
 
   ResourceTabItem(this.name, this.materialType);
-}
-
-class ResourcesTabBarViewSearchController {
-  Stream<String> get queryChanges async* {
-    yield* _controller.stream;
-  }
-
-  final _controller = StreamController<String>();
-
-  void setQueryText(String query) {
-    _controller.add(query);
-  }
 }

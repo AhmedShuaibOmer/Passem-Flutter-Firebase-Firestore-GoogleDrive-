@@ -14,21 +14,21 @@ import 'package:passem/generated/l10n.dart';
 String getMaterialTypString(StudyMaterialType type, BuildContext context) {
   switch (type) {
     case StudyMaterialType.generalDocument:
-      return S.of(context).general_document;
+      return S.of(context).general;
 
     case StudyMaterialType.summary:
-      return S.of(context).summary;
+      return S.of(context).summaries;
 
     case StudyMaterialType.lectureNotes:
-      return S.of(context).lecture_notes;
+      return S.of(context).lectures_notes;
 
     case StudyMaterialType.examPapers:
-      return S.of(context).exam_papers;
+      return S.of(context).exams_papers;
 
     case StudyMaterialType.exercise:
-      return S.of(context).exercise;
+      return S.of(context).exercises;
 
     case StudyMaterialType.externalResource:
-      return S.of(context).external_resource;
+      return S.of(context).external_resources;
   }
 }

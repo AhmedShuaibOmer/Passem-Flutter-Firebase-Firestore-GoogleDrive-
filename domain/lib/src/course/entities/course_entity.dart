@@ -11,15 +11,18 @@ import 'package:meta/meta.dart';
 class CourseEntity extends Equatable {
   final String id;
   final String name;
+  final String deepLink;
 
   CourseEntity({
     @required this.id,
     @required this.name,
-  }) : assert(id != null && name != null);
+    @required this.deepLink,
+  }) : assert(id != null && name != null && deepLink != null);
 
   @override
   List<Object> get props => [
         id,
         name,
+        deepLink,
       ];
 }

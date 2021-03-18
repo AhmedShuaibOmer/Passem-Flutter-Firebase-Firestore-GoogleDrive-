@@ -8,6 +8,8 @@
 
 const String usersPath = 'users';
 
+const String versionPath = 'version';
+
 const String universitiesPath = 'universities';
 
 String collegesPath(String universityId) =>

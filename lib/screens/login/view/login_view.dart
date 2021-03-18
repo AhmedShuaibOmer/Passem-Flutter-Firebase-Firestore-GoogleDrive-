@@ -44,23 +44,54 @@ class LoginView extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        body: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              top: .7 * MediaQuery.of(context).size.height,
-              width: 300,
-              child: ProgressButton(
-                child: _buttonContent(context),
-                onPressed: () {
-                  _onPressed(context);
-                },
-                controller: _progressButtonController,
-                progressColor: Theme.of(context).primaryColor,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: SafeArea(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                top: 0.2 * MediaQuery.of(context).size.height,
+                right: 32,
+                left: 32,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        S.of(context).intro,
+                        style: Theme.of(context).textTheme.headline4.copyWith(
+                              color: Colors.white,
+                            ),
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Flexible(
+                      child: Text(
+                        S.of(context).intro_2,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            .copyWith(color: Colors.white70),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+              Positioned(
+                top: .8 * MediaQuery.of(context).size.height,
+                width: 300,
+                child: ProgressButton(
+                  child: _buttonContent(context),
+                  onPressed: () {
+                    _onPressed(context);
+                  },
+                  controller: _progressButtonController,
+                  progressColor: Theme.of(context).primaryColor,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -6,13 +6,17 @@
  *
  */
 
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
-import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:passem/generated/l10n.dart';
+import 'package:passem/utils/utils.dart';
+import 'package:share/share.dart';
 
 import '../../../router/router.dart';
 import '../bloc/navigation_bloc.dart';
@@ -28,7 +32,7 @@ class MainContent extends StatelessWidget {
         return WillPopScope(
           onWillPop: bloc.onWillPop,
           child: Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: Colors.white,
             drawerScrimColor: Theme.of(context).primaryColor.withOpacity(0.6),
             drawer: Drawer(
               // Add a ListView to the drawer. This ensures the user can scroll
@@ -56,26 +60,44 @@ class MainContent extends StatelessWidget {
                       ),
                     ]),
                   ),
+                  ListTile(
+                    leading: Icon(Icons.share),
+                    title: Text(S.of(context).invite_a_friend),
+                    onTap: () async {
+                      Share.share(
+                          '${S.of(context).intro_2} \n https://passem0.web.app');
+                    },
+                  ),
+                  /*ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text(S.of(context).logout),
+                    onTap: () async {
+                      context
+                          .read<AuthenticationBloc>()
+                          .add(AuthenticationLogoutRequested());
+                    },
+                  ),*/
+                  ListTile(
+                    leading: Icon(MaterialCommunityIcons.whatsapp),
+                    title: Text(S.of(context).contact_us),
+                    onTap: () async {
+                      String url() {
+                        if (Platform.isAndroid) {
+                          return "https://api.whatsapp.com/send?phone=+249111779847&text=";
+                        } else {
+                          return "https://wa.link/mkn7f";
+                        }
+                      }
+
+                      launchInBrowser(context, url());
+                    },
+                  ),
                   AboutListTile(
                     icon: Icon(Icons.info_outline_rounded),
                     applicationName: S.of(context).app_name,
                     applicationVersion: '1.0.0',
                     applicationLegalese: '©2021 A.Shuaib Omer',
                     dense: false,
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text('Logout'),
-                    onTap: () async {
-                      context
-                          .read<AuthenticationBloc>()
-                          .add(AuthenticationLogoutRequested());
-                      await Future.delayed(Duration(seconds: 1)).then((value) =>
-                          ExtendedNavigator.of(context).pushAndRemoveUntil(
-                            Routes.loginScreen,
-                            (route) => false,
-                          ));
-                    },
                   ),
                 ],
               ),

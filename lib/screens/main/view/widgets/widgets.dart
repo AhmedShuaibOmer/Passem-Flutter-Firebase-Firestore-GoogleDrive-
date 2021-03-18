@@ -9,7 +9,7 @@
 export 'custom_tab_bar.dart';
 export 'custom_tab_indicator.dart';
 export 'floating_modal_bottom_sheet.dart';
-export 'list_items.dart';
+export 'courses_list_item.dart';
 export 'my_text_field.dart';
 export 'resources_tab_bar_view.dart';
 export 'study_material_list_item.dart';

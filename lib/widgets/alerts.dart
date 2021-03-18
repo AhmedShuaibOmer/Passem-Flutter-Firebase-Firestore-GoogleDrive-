@@ -31,7 +31,7 @@ class OperationFailedAlert extends Flushbar {
   OperationFailedAlert(BuildContext context, {String message})
       : super(
           title: S.of(context).operation_failed,
-          message: message ?? S.of(context).login_with_google_failure,
+          message: message ?? S.of(context).something_went_wrong,
           icon: Icon(
             Icons.error_outline_rounded,
             color: Theme.of(context).errorColor,

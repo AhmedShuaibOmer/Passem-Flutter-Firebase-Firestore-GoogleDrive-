@@ -77,7 +77,7 @@ class UserEntity extends Equatable {
     email: '',
     id: '',
     name: null,
-    role: null,
+    role: 'user',
     photoUrl: null,
     universityId: null,
     collegeId: null,
@@ -93,6 +93,9 @@ class UserEntity extends Equatable {
       this.id.isNotEmpty &&
       this.email.isNotEmpty &&
       (this.universityId == null || this.collegeId == null);
+
+  /// If true true this user is an admin and have extra privileges.
+  bool get isAdmin => this.role == 'admin';
 
   @override
   List<Object> get props => [

@@ -12,13 +12,7 @@ import 'package:passem/generated/l10n.dart';
 
 import '../../../../../../screens/main/view/widgets/widgets.dart';
 
-class StarredView extends StatefulWidget {
-  @override
-  _StarredViewState createState() => _StarredViewState();
-}
-
-class _StarredViewState extends State<StarredView>
-    with SingleTickerProviderStateMixin {
+class StarredView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ids = context
@@ -30,7 +24,22 @@ class _StarredViewState extends State<StarredView>
           // These are the slivers that show up in the "outer" scroll view.
           return <Widget>[
             SliverAppBar(
-              leading: _buildMenuCloseButton(),
+              leading: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    iconSize: 24,
+                    icon: Icon(
+                      Icons.menu,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    tooltip:
+                        MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  );
+                },
+              ),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Text(
                 S.of(context).starred_materials,
@@ -76,7 +85,31 @@ class _StarredViewState extends State<StarredView>
                   ),
                 );
               case BaseListStatus.empty:
-                return Container();
+                return Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          S.of(context).no_starred_items,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Flexible(
+                        child: Text(
+                          S.of(context).add_starred_items,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               default:
                 return Container();
             }
@@ -84,42 +117,5 @@ class _StarredViewState extends State<StarredView>
         ),
       ),
     );
-  }
-
-  AnimationController _menuCloseAnimationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _menuCloseAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 400),
-      reverseDuration: Duration(milliseconds: 400),
-    );
-  }
-
-  Widget _buildMenuCloseButton() {
-    return Builder(
-      builder: (BuildContext context) {
-        return IconButton(
-          iconSize: 24,
-          icon: AnimatedIcon(
-            icon: AnimatedIcons.menu_close,
-            color: Theme.of(context).primaryColor,
-            progress: _menuCloseAnimationController,
-          ),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
-          },
-          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-        );
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _menuCloseAnimationController.dispose();
-    super.dispose();
   }
 }

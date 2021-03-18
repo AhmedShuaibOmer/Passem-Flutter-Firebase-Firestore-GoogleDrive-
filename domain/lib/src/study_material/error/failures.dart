@@ -14,6 +14,10 @@ class DeleteMaterialFailure extends Failure {}
 
 class StudyMaterialsFetchingFailure extends Failure {}
 
+class StudyMaterialsCachingFailure extends Failure {}
+
+class StudyMaterialsUnCachingFailure extends Failure {}
+
 class StudyMaterialsSearchingFailure extends Failure {}
 
 class MaterialUpdateFailure extends Failure {}

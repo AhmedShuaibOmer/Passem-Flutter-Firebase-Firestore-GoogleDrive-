@@ -9,15 +9,10 @@ import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:passem/generated/l10n.dart';
-import 'package:passem/screens/main/view/widgets/list_items.dart';
+import 'package:passem/screens/main/view/widgets/courses_list_item.dart';
 
-class MyCoursesView extends StatefulWidget {
-  @override
-  _MyCoursesViewState createState() => _MyCoursesViewState();
-}
+class MyCoursesView extends StatelessWidget {
 
-class _MyCoursesViewState extends State<MyCoursesView>
-    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final ids =
@@ -29,7 +24,22 @@ class _MyCoursesViewState extends State<MyCoursesView>
           // These are the slivers that show up in the "outer" scroll view.
           return [
             SliverAppBar(
-              leading: _buildMenuCloseButton(),
+              leading: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    iconSize: 24,
+                    icon: Icon(
+                      Icons.menu,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    tooltip:
+                    MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  );
+                },
+              ),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Text(
                 S.of(context).my_courses,
@@ -44,6 +54,25 @@ class _MyCoursesViewState extends State<MyCoursesView>
         body: BlocBuilder<MyCoursesBloc, BaseListState>(
           builder: (BuildContext context, BaseListState state) {
             switch (state.status) {
+              case BaseListStatus.hasData:
+                print('courses items ${state.items.length}');
+                return CustomScrollView(
+                  physics: BouncingScrollPhysics(),
+                  slivers: <Widget>[
+                    SliverPadding(
+                      padding: const EdgeInsets.all(8.0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            final CourseEntity course = state.items[index];
+                            return courseListItem(course, context);
+                          },
+                          childCount: state.items.length,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               case BaseListStatus.loading:
                 return Container(
                   alignment: Alignment.center,
@@ -53,19 +82,40 @@ class _MyCoursesViewState extends State<MyCoursesView>
                     child: CircularProgressIndicator(),
                   ),
                 );
-              case BaseListStatus.hasData:
-                print('courses items ${state.items.length}');
-                return ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: state.items.length,
-                  padding: EdgeInsets.all(8.0),
-                  itemBuilder: (BuildContext context, int index) {
-                    final CourseEntity course = state.items[index];
-                    return courseListItem(course, context);
-                  },
-                );
               case BaseListStatus.empty:
-                return Container();
+                return Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          S.of(context).no_courses_found,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              S.of(context).how_to_add_courses,
+                            ),
+                          ),
+                          Flexible(child: Text(S.of(context).how_to_add_courses_1)),
+                          Flexible(child: Text(S.of(context).how_to_add_courses_2)),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
               default:
                 return Container();
             }
@@ -73,42 +123,5 @@ class _MyCoursesViewState extends State<MyCoursesView>
         ),
       ),
     );
-  }
-
-  AnimationController _menuCloseAnimationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _menuCloseAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 400),
-      reverseDuration: Duration(milliseconds: 400),
-    );
-  }
-
-  Widget _buildMenuCloseButton() {
-    return Builder(
-      builder: (BuildContext context) {
-        return IconButton(
-          iconSize: 24,
-          icon: AnimatedIcon(
-            icon: AnimatedIcons.menu_close,
-            color: Theme.of(context).primaryColor,
-            progress: _menuCloseAnimationController,
-          ),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
-          },
-          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-        );
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _menuCloseAnimationController.dispose();
-    super.dispose();
   }
 }

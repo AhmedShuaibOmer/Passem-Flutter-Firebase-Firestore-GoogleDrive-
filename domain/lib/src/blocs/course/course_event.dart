@@ -11,6 +11,8 @@ part of 'course_bloc.dart';
 @immutable
 abstract class CourseEvent {}
 
+class CourseRefreshRequested extends CourseEvent {}
+
 class CourseStarted extends CourseEvent {
   final String courseId;
   final CourseEntity courseEntity;
