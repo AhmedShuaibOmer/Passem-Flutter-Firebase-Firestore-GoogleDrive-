@@ -96,5 +96,8 @@
   "new_version_available": "New version available!",
   "update": "Update",
   "not_now": "Not now",
-  "shares_count": "Shares Count"
+  "shares_count": "Shares Count",
+  "open_settings": "Open settings",
+  "storage_permission_permanently_denied": "We have no permission to access your storage, and you permanently denied it. you can give us your permission from the app settings>permissions>storage.",
+  "storage_permission_denied": "We need your permission to access your storage so we can open and download your files."
 }

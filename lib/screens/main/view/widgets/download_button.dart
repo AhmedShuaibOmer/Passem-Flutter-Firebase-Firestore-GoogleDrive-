@@ -20,7 +20,7 @@ abstract class DownloadController implements ChangeNotifier {
   DownloadStatus get downloadStatus;
   double get progress;
 
-  void startDownload();
+  void startDownload(BuildContext context);
   void stopDownload();
   void openDownload();
 }
@@ -142,7 +142,11 @@ class DownloadButton extends StatelessWidget {
                 ? cupertino.CupertinoColors.lightBackgroundGray
                 : Colors.blue),
             strokeWidth: 2.0,
-            value: _isFetching ? null : progress,
+            value: _isFetching
+                ? null
+                : progress == 777777777.777777777
+                    ? null
+                    : progress,
           );
         },
       ),

@@ -13,6 +13,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:data/data.dart';
 import 'package:device_info/device_info.dart';
 import 'package:domain/domain.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
@@ -111,7 +112,7 @@ class _StudyMaterialListItemState extends State<StudyMaterialListItem> {
       ),
       child: _buildContent(context, isDownloaded),
       onPressed: () {
-        openMaterial(isDownloaded);
+        openMaterial(isDownloaded, context);
       },
     );
   }
@@ -188,7 +189,9 @@ class _StudyMaterialListItemState extends State<StudyMaterialListItem> {
               return DownloadButton(
                 status: downloadController.downloadStatus,
                 downloadProgress: downloadController.progress,
-                onDownload: downloadController.startDownload,
+                onDownload: () {
+                  downloadController.startDownload(context);
+                },
                 onCancel: downloadController.stopDownload,
                 onOpen: downloadController.openDownload,
               );
@@ -339,7 +342,7 @@ class _StudyMaterialListItemState extends State<StudyMaterialListItem> {
                   UnsupportedOperationAlert(context).show(context);
                 }
               } else {
-                openMaterial(isDownloaded, isOpenWith: true);
+                openMaterial(isDownloaded, context, isOpenWith: true);
               }
             } else if (i == 1) {
               ExtendedNavigator.root.push(
@@ -445,13 +448,14 @@ class _StudyMaterialListItemState extends State<StudyMaterialListItem> {
     );
   }
 
-  void openMaterial(bool isDownloaded, {bool isOpenWith = false}) async {
+  void openMaterial(bool isDownloaded, context,
+      {bool isOpenWith = false}) async {
     if (isExternalResource) {
       launchInWebViewWithJavaScript(context, materialEntity.materialUrl);
     } else {
       if (isDownloaded) {
         print('open material : downloaded material');
-        if (await _requestPermission(Permission.storage)) {
+        if (await _requestPermission(Permission.storage, context)) {
           print('open material : permission granted');
           final path = await localPath;
           print(path);
@@ -479,7 +483,7 @@ class _StudyMaterialListItemState extends State<StudyMaterialListItem> {
         } else {}
       } else {
         if (downloadController != null) {
-          downloadController.startDownload();
+          downloadController.startDownload(context);
         }
       }
     }
@@ -542,9 +546,9 @@ class StudyMaterialDownloadController extends DownloadController
   bool _isDownloading = false;
 
   @override
-  void startDownload() async {
+  void startDownload(BuildContext context) async {
     if (downloadStatus == DownloadStatus.notDownloaded) {
-      if (await Permission.storage.request().isGranted) {
+      if (await _requestPermission(Permission.storage, context)) {
         _doDownload();
       }
     }
@@ -610,7 +614,7 @@ class StudyMaterialDownloadController extends DownloadController
       contentLength = response.contentLength.toDouble();
     } else {
       contentLength = double.parse(
-          response.headers['x-decompressed-content-length'] ?? '50000');
+          response.headers['x-decompressed-content-length'] ?? '5000000');
     }
 
     print('Start download : content length : $contentLength');
@@ -632,10 +636,13 @@ class StudyMaterialDownloadController extends DownloadController
         // update progress
         bytes.addAll(newBytes);
         final downloadedLength = bytes.length;
-        if (contentLength == null) contentLength = 50000.0;
+        if (contentLength == null) contentLength = 5000000.0;
         final progress = downloadedLength / contentLength;
-        if (progress > 1) _progress = null;
-        _progress = progress;
+        print(progress);
+        if (progress >= 1.0)
+          _progress = 777777777.777777777;
+        else
+          _progress = progress;
         notifyListeners();
       },
       onDone: () async {
@@ -684,34 +691,30 @@ Future<String> getFileDownloadDirectory(
   Directory directory;
   try {
     if (Platform.isAndroid) {
-      if (await _requestPermission(Permission.storage)) {
-        directory = await getExternalStorageDirectory();
-        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-        final androidInfo = await deviceInfo.androidInfo;
-        if (androidInfo.version.sdkInt < 30) {
-          String newPath = "";
-          print(directory);
-          List<String> paths = directory.path.split("/");
-          for (int x = 1; x < paths.length; x++) {
-            String folder = paths[x];
-            if (folder != "Android") {
-              newPath += "/" + folder;
-            } else {
-              break;
-            }
+      directory = await getExternalStorageDirectory();
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+      if (androidInfo.version.sdkInt < 30) {
+        String newPath = "";
+        print(directory);
+        List<String> paths = directory.path.split("/");
+        for (int x = 1; x < paths.length; x++) {
+          String folder = paths[x];
+          if (folder != "Android") {
+            newPath += "/" + folder;
+          } else {
+            break;
           }
-          newPath = newPath + "/PassemApp";
-          directory = Directory(newPath);
         }
-      } else {
-        // TODO : implement Permission rejected.
+        newPath = newPath + "/PassemApp";
+        directory = Directory(newPath);
       }
     } else {
-      if (await _requestPermission(Permission.photos)) {
+      /*if (await _requestPermission(Permission.photos)) {
         directory = await getTemporaryDirectory();
       } else {
         // TODO : implement Permission rejected.
-      }
+      }*/
     }
 
     if (!await directory.exists()) {
@@ -725,14 +728,48 @@ Future<String> getFileDownloadDirectory(
   }
 }
 
-Future<bool> _requestPermission(Permission permission) async {
+Future<bool> _requestPermission(
+    Permission permission, BuildContext context) async {
   if (await permission.isGranted) {
     return true;
   } else {
     var result = await permission.request();
     if (result == PermissionStatus.granted) {
       return true;
+    } else if (result == PermissionStatus.denied) {
+      Flushbar(
+        message: S.of(context).storage_permission_denied,
+        icon: Icon(
+          Icons.error_outline_rounded,
+          color: Colors.orangeAccent,
+          size: 28,
+        ),
+        borderRadius: 8,
+        margin: const EdgeInsets.all(8),
+        duration: const Duration(seconds: 6),
+      ).show(context);
+      return false;
     } else if (result == PermissionStatus.permanentlyDenied) {
+      Flushbar(
+        message: S.of(context).storage_permission_permanently_denied,
+        icon: Icon(
+          Icons.error_outline_rounded,
+          color: Colors.orangeAccent,
+          size: 28,
+        ),
+        borderRadius: 8,
+        margin: const EdgeInsets.all(8),
+        duration: const Duration(seconds: 6),
+        mainButton: TextButton(
+          child: Text(S.of(context).open_settings),
+          onPressed: () async {
+            final result = await openAppSettings();
+            if (result == false) {
+              UnsupportedOperationAlert(context).show(context);
+            }
+          },
+        ),
+      ).show(context);
       return false;
     }
   }

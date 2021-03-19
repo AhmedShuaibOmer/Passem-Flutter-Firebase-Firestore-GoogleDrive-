@@ -507,6 +507,7 @@ class FirestoreService {
           'created',
           descending: true,
         )
+        .limit(10)
         .snapshots()
         .map((querySnapshot) {
       final List<StudyMaterialEntity> materials = [];
@@ -546,7 +547,7 @@ class FirestoreService {
           'type',
           isEqualTo: StudyMaterial.materialTypeToString(materialType),
         )
-        .orderBy('courseName');
+        .orderBy('label');
   }
 
   // **************************************************************************

@@ -1004,6 +1004,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Open settings`
+  String get open_settings {
+    return Intl.message(
+      'Open settings',
+      name: 'open_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We have no permission to access your storage, and you permanently denied it. you can give us your permission from the app settings>permissions>storage.`
+  String get storage_permission_permanently_denied {
+    return Intl.message(
+      'We have no permission to access your storage, and you permanently denied it. you can give us your permission from the app settings>permissions>storage.',
+      name: 'storage_permission_permanently_denied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We need your permission to access your storage so we can open and download your files.`
+  String get storage_permission_denied {
+    return Intl.message(
+      'We need your permission to access your storage so we can open and download your files.',
+      name: 'storage_permission_denied',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

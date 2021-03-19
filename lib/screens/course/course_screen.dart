@@ -8,6 +8,7 @@
 
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:passem/di/di.dart';
 
@@ -21,13 +22,23 @@ class CourseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CourseBloc(
-        courseRepository: sl(),
-        courseId: courseId,
-        courseEntity: course,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // transparent status bar
+        systemNavigationBarColor:
+            Theme.of(context).scaffoldBackgroundColor, // navigation bar color
+        statusBarIconBrightness: Brightness.dark, // status bar icons' color
+        systemNavigationBarIconBrightness:
+            Brightness.dark, //navigation bar icons' color
       ),
-      child: CourseView(),
+      child: BlocProvider(
+        create: (_) => CourseBloc(
+          courseRepository: sl(),
+          courseId: courseId,
+          courseEntity: course,
+        ),
+        child: CourseView(),
+      ),
     );
   }
 }

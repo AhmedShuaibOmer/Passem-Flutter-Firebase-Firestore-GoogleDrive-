@@ -32,10 +32,12 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    print("fetching version...");
     sl<FirestoreService>().getLatestVersionData().then((value) {
       try {
-        final double version = value['version'];
-        if (version > PASSEM_CURRENT_VERSION) {
+        final int version = value['version'];
+        print('Version : $version');
+        if (version.toDouble() > PASSEM_CURRENT_VERSION) {
           showPrimaryDialog(
             context: context,
             dialogBuilder: (ctx) {
@@ -45,9 +47,8 @@ class _MainScreenState extends State<MainScreen> {
                   TextButton(
                     child: Text(S.of(context).update),
                     onPressed: () async {
-                      await launchInBrowser(
-                          ctx, value['downloadUrl'] as String);
-                      Navigator.of(ctx).pop();
+                      await launchInBrowser(ctx,
+                          value['downloadUrl'] as String);
                     },
                   ),
                   TextButton(

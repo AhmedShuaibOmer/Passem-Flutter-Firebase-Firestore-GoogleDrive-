@@ -30,12 +30,13 @@ class _HomeViewState extends State<HomeView>
   bool isSearchMode = false;
   bool canExpandHeader = true;
 
-  final FocusNode _searchFocusNode = FocusNode();
+  FocusNode _searchFocusNode;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _searchFocusNode = FocusNode();
     _nestedScrollViewController = ScrollController();
     _menuCloseAnimationController = AnimationController(
       vsync: this,

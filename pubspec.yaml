@@ -3,7 +3,7 @@ description: A new Flutter application.
 
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -32,7 +32,6 @@ dependencies:
   modal_bottom_sheet: ^2.0.0-nullsafety.1
 # Used to handle permission requests on android and ios.
   permission_handler: ^6.0.1
-  file_picker: ^3.0.0
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.1

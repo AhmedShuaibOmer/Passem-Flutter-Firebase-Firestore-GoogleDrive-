@@ -87,7 +87,6 @@ class CourseView extends StatelessWidget {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
-                //bottom: _tabBar(),
               ),
             ];
           }, body: BlocBuilder<CourseBloc, CourseState>(

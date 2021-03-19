@@ -27,7 +27,7 @@ class PdfViewerPage extends StatefulWidget {
 class _PdfViewerPageState extends State<PdfViewerPage> {
   static final int _initialPage = 1;
   int _actualPageNumber = _initialPage, _allPagesCount = 0;
-  bool isSampleDoc = true;
+  bool isVertical = true;
   PdfController _pdfController;
 
   @override
@@ -47,15 +47,15 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-    value: SystemUiOverlayStyle(
+        value: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent, // transparent status bar
-          systemNavigationBarColor: Theme.of(context)
-              .scaffoldBackgroundColor, // navigation bar color
+          systemNavigationBarColor:
+              Theme.of(context).scaffoldBackgroundColor, // navigation bar color
           statusBarIconBrightness: Brightness.dark, // status bar icons' color
           systemNavigationBarIconBrightness:
               Brightness.dark, //navigation bar icons' color
         ),
-    child: SafeArea(
+        child: SafeArea(
           child: NestedScrollView(
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
@@ -84,7 +84,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
                   ),
                   actions: <Widget>[
                     IconButton(
-                      icon: Icon(Icons.navigate_before,
+                      icon: Icon(Icons.arrow_upward,
                           color: Theme.of(context).primaryColor),
                       onPressed: () {
                         _pdfController.previousPage(
@@ -103,7 +103,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.navigate_next,
+                      icon: Icon(Icons.arrow_downward,
                           color: Theme.of(context).primaryColor),
                       onPressed: () {
                         _pdfController.nextPage(
@@ -120,6 +120,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
               ];
             },
             body: PdfView(
+              scrollDirection: Axis.vertical,
               physics: BouncingScrollPhysics(),
               documentLoader: Center(child: CircularProgressIndicator()),
               pageLoader: Center(child: CircularProgressIndicator()),
@@ -137,5 +138,5 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
             ),
           ),
         ),
-  );
+      );
 }
